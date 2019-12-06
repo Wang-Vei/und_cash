@@ -6,6 +6,7 @@ import flexible from 'lib-flexible/';
 import fastClick from 'fastclick';
 import '@/assets/css/reset.css';
 import '@/assets/css/border.css';
+import '@/assets/css/vant_new.css';
 
 import { Field } from 'vant';
 Vue.use(Field);
@@ -20,3 +21,27 @@ new Vue({
     store,
     render: h => h(App)
 }).$mount('#app');
+
+//路由守卫  验证登录状态
+router.beforeEach((to, from, next) => {
+  console.log(to);
+  console.log(from)
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
+  // var needlogin = to.meta.needlogin;
+  // // 判断该路由是否需要登录权限
+  // if (needlogin === true) {
+  //   if ($cookies.get('uid')) {
+  //     next()
+  //   } else {
+  //     next('/login')
+  //   }
+  // } else {
+  //   next()  // 确保一定要有next()被调用
+  // }
+});

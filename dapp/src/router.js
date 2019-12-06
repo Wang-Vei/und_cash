@@ -1,20 +1,18 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-// import HellowWorld from './views/HellowWorld';
+
 
 Vue.use(Router);
 
 export default new Router({
     routes: [{
             path: '/',
-            name: 'home',
-            component: Home,
-            // children: {
-            //     path: 'hello',
-            //     name: 'HellowWorld',
-            //     component: HellowWorld,
-            // }
+            name: 'index',
+            component: () => import ('@/components/Index.vue'),
+            meta:{
+                title:'全球网关支付系统',
+            //     needlogin:true,
+            }
         },
         // {
         //     path: '/about',
@@ -26,4 +24,11 @@ export default new Router({
         //         import ( /* webpackChunkName: "about" */ './views/About.vue')
         // }
     ]
+  // router.beforeEach((to, from, next) => {
+  // 	if (to.meta.title) {
+  // 	  document.title = to.meta.title
+  // 	}
+  // 	next()
+  // });
 });
+

@@ -1,0 +1,18 @@
+/*#index van-cell-group .van-cell .van-cell__value .van-field__body input*/
+#index .van-cell{
+    background-color: rgba(0,0,0,0);
+}
+#index input{
+    font-size: 28px;
+    color: #fff;
+    border: 1px solid #8BF692;
+    padding-left: 10px;
+    height: 80px;
+    border-radius: 10px;
+    box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 8px ;
+    -moz-box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 8px;
+    -webkit-box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 8px;
+}
+#index>span{
+    color: red!important;
+}

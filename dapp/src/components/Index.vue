@@ -1,11 +1,11 @@
 <template>
-  <div class="HellowWorld" style="width:100%;height:100%">
-    <span style="color:#fff;">31321</span>
-    
+  <div id="index" style="width:100%;height:100%" v-title data-title="贝住包房管理">
+    <span style="color:#fff;">3132100</span>
+
     <van-cell-group>
       <van-field v-model="value" placeholder="请输入用户名" />
     </van-cell-group>
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
     <van-radio-group v-model="radio">
       <van-radio name="1" checked-color="#07c160">单选框 1</van-radio>
       <van-radio name="2" checked-color="#07c160">单选框 2</van-radio>
@@ -16,14 +16,14 @@
       <option value="">3</option>
     </select>
 
-    
+
   </div>
 </template>
 
 <script>
 import { RadioGroup, Radio } from 'vant';
 export default {
-  name: 'HellowWorld',
+  name: 'index',
   props: {
     msg: String
   },
@@ -36,14 +36,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.HelloWorld{
+van-cell-group{
+    padding-left: 10px;
+    height: 80px;
+  }
+  .van-field control{
+    border: 1px solid #8BF692;
+    padding-left: 10px;
+    height: 80px;
+    border-radius: 10px;
+    box-shadow: inset rgba(139,246,146,1) 0px 0px 8px;
+    -moz-box-shadow: inset  rgba(139,246,146,1) 0px 0px 8px;
+    -webkit-box-shadow: inset  rgba(139,246,146,1) 0px 0px 8px;
+  }
+
+#index{
   padding: 0;
   margin: 0;
 }
 
-.hello{
-  width: 100%;
-}
+
 
 h3 {
   margin: 40px 0 0;
