@@ -1,74 +1,96 @@
 <template>
-  <div id="index" style="width:100%;height:100%" v-title data-title="贝住包房管理">
-    <span style="color:#fff;">3132100</span>
+  <div id="index" style="max-width:750px;height:100%;margin:0 auto">
+    <div class="header_img">
+      <div>
+        
+      </div>
+    </div>
+    
+    <van-tabs v-model="active" swipeable>
+      <van-tab title="支付网关">
+        <input class="i_input" v-model="value" placeholder="请输入用户名">
+        <input class="i_input" v-model="value" placeholder="请输入用户密码">
+      </van-tab>
+      <van-tab title="交易记录">  <input class="i_input" v-model="value" placeholder="请输入用户名"></van-tab>
+      <span class="icon">OO</span>
+    </van-tabs>
+    
 
-    <van-cell-group>
-      <van-field v-model="value" placeholder="请输入用户名" />
-    </van-cell-group>
 
-    <van-radio-group v-model="radio">
-      <van-radio name="1" checked-color="#07c160">单选框 1</van-radio>
-      <van-radio name="2" checked-color="#07c160">单选框 2</van-radio>
-    </van-radio-group>
-    <select name="" id="">
-      <option value="">1</option>
-      <option value="">2</option>
-      <option value="">3</option>
-    </select>
+
 
 
   </div>
 </template>
 
 <script>
-import { RadioGroup, Radio } from 'vant';
+import { Image, Lazyload, Loading, Tab, Tabs } from 'vant';
 export default {
   name: 'index',
-  props: {
-    msg: String
+  data(){
+    return{
+      value: "",
+    }
   },
   components:{
-    [RadioGroup.name]:RadioGroup,
-    [Radio.name]:Radio
+    [Image.name]:Image,
+    [Lazyload.name]:Lazyload,
+    [Loading.name]:Loading,
+    [Tab.name]:Tab,
+    [Tabs.name]:Tabs,
+  },
+  methods:{
+
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-van-cell-group{
-    padding-left: 10px;
-    height: 80px;
-  }
-  .van-field control{
-    border: 1px solid #8BF692;
-    padding-left: 10px;
-    height: 80px;
-    border-radius: 10px;
-    box-shadow: inset rgba(139,246,146,1) 0px 0px 8px;
-    -moz-box-shadow: inset  rgba(139,246,146,1) 0px 0px 8px;
-    -webkit-box-shadow: inset  rgba(139,246,146,1) 0px 0px 8px;
-  }
 
+
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" scoped >
+$tc:#8BF692;
+$i_bor:#7B7780;
 #index{
   padding: 0;
   margin: 0;
-}
-
-
-
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+  .header_img{
+    width: 100%;
+    height: 326px;
+    background-image: url('../assets/img/map.gif');
+    background-size: 130% 326px;
+    background-position-x: -105px;
+  }
+  .i_input {
+    width: 90%;
+    font-size: 28px;
+    border: 1px solid $i_bor;
+    color: #fff;
+    background-color: rgba($color: #000000, $alpha: 0.0);
+    padding-left: 10px;
+    height: 80px;
+    border-radius: 10px;
+  }
+  .i_input:focus{
+    width: 90%;
+    font-size: 28px;
+    border: 2px solid $tc;
+    color: #fff;
+    background-color: rgba($color: #000000, $alpha: 0.0);
+    padding-left: 10px;
+    height: 80px;
+    border-radius: 10px;
+    box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 15px;
+    -moz-box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 15px;
+    -webkit-box-shadow: inset rgba(139, 246, 146, 1) 0px 0px 15px;
+  }
+  .icon{
+    width: 30px;
+    height: 30px;
+    background-color: #7B7780;
+    position: absolute;
+    top: 0;
+  }
 }
 </style>

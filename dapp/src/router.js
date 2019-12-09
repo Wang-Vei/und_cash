@@ -8,10 +8,11 @@ export default new Router({
     routes: [{
             path: '/',
             name: 'index',
-            component: () => import ('@/components/Index.vue'),
-            meta:{
-                title:'全球网关支付系统',
-            //     needlogin:true,
+            component: () =>
+                import ('@/components/Index.vue'),
+            meta: {
+                title: '全球网关支付系统',
+                //     needlogin:true,
             }
         },
         // {
@@ -23,12 +24,12 @@ export default new Router({
         //     component: () =>
         //         import ( /* webpackChunkName: "about" */ './views/About.vue')
         // }
-    ]
-  // router.beforeEach((to, from, next) => {
-  // 	if (to.meta.title) {
-  // 	  document.title = to.meta.title
-  // 	}
-  // 	next()
-  // });
-});
+    ],
 
+});
+// router.beforeEach((to, from, next) => {
+//     if (to.meta.title) {
+//         document.title = to.meta.title
+//     }
+//     next()
+// });
