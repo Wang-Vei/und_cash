@@ -7,6 +7,7 @@ import fastClick from 'fastclick';
 import '@/assets/css/reset.css';
 import '@/assets/css/border.css';
 import '@/assets/css/vant_new.scss';
+import '@/assets/css/iconfont.css';
 // import { Lazyload } from 'vant';
 // Vue.use(Lazyload);
 

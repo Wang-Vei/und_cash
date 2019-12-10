@@ -4,10 +4,9 @@
   </div>
 </template>
 <style scope>
-#app{
-  height: 100vh;
-  max-width: 100%;
-  background-color: black;
-  margin: 0 auto;
+html,body,#app{
+  min-height: 100%;
+  width: 100%;
+  background-color: #232624;
 }
 </style>
