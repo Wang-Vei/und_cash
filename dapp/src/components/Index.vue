@@ -1,55 +1,172 @@
 <template>
   <div id="index" style="max-width:100%;">
-    <div class="header_img">
-      <div>
-        
-      </div>
-    </div>
-    
-    <van-tabs v-model="active" swipeable>
+    <div class="header_img"></div>
+    <van-tabs swipeable>
       <van-tab title="支付网关">
         <div class="top_part">
           <div class="clock">
-            <li><span>账户余额&nbsp&nbsp&nbsp<i class="iconfont icon-jiesuo"></i></span></li>
-            <li><span>175056.17</span>UNDT</li>
+            <li>
+              <span class="account_label">账户余额&nbsp&nbsp&nbsp
+              <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
+              <i class="iconfont icon-suo" v-else></i>
+              </span>
+            </li>
+            <li><span class="account_balance">175056.17</span>UNDT</li>
           </div>
-          <div class="">
-            <input type="text" class="i_input" v-model="value" placeholder="请输入用户密码">
+          <div class="every_form">
+            <li class="have_tip">
+              <i class="iconfont icon-wangguan" style="display:inline-block;transform:rotate(60deg);"></i>
+              <label for="gateWay">选择网关</label>
+            </li>
+            <div class="form_right_part" v-clickoutside="handleClean_getWay">
+              <div class="select_getWay">
+                <input readonly :class="`i_input ${getWay_clicked?'getWay_clicked':''}`" placeholder="选择网关" v-model="v_getWay" @click="handleChoise_getWay" >
+                <span class="getWay_icon_xia" @click="handleChoise_getWay"><i class="iconfont icon-xia-copy"></i></span>
+                <button class="getWay_details">详情</button>
+                <span>添加</span><br>
+              </div>
+              <van-popup v-model="showPicker" position="bottom">
+                <van-picker
+                  show-toolbar
+                  :columns="columns"
+                  @cancel="showPicker = false"
+                  @confirm="onConfirm"
+                />
+              </van-popup>
+              
+              <span class="form_tip">参考汇率：1 UNDT = 0保证金：1%</span>
+            </div>
           </div>
-          <div>
-            <input type="text" class="i_input" v-model="value" placeholder="请输入用户密码">
+          <div class="every_form">
+            <li class="have_tip">
+              <i class="iconfont icon-jine"></i>
+              <label for="money">支付金额</label>
+            </li>
+            <div class="form_right_part">
+              <input type="text" class="i_input" id="money" v-model="v_money" placeholder="输入金额">
+              <span>全部</span><br>
+              <span class="form_tip">扣除金额：0 UNDT</span>
+            </div>
           </div>
-          <span style="display:inline-block;transform:rotate(60deg);"><i class="iconfont icon-wangguan" style="color: #fff;font-size:16px;"></i></span>
-          <input type="text" class="i_input" v-model="value" placeholder="请输入用户名">
+          <div class="every_form">
+            <li>
+              <i class="iconfont icon-beizhu1"></i>
+              <label for="postscript">备&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp注</label>
+            </li>
+            <div class="form_right_part">
+              <input type="text" class="i_input" id="postscript" v-model="v_postscript" placeholder="输入附言，70字以内">
+            </div>
+          </div>
+          <div class="every_form">
+            <li>
+              <i class="iconfont icon-tubiaozhizuomoban" style="font-weight:600;"></i>
+              <label for="dealer">交&nbsp&nbsp易&nbsp&nbsp商</label>
+            </li>
+            <div class="form_right_part">
+              <input type="text" class="i_input" id="dealer" v-model="v_dealer" placeholder="系统推荐">
+              <span>查看</span><br>
+            </div>
+          </div>
+          <div class="top_entrance">
+            <span>新手指南</span>
+            <span>交易商入口</span>
+          </div>
         </div>
         <button>
           立即提款
         </button>
-       
       </van-tab>
-      <van-tab title="交易记录"> <input class="i_input" v-model="value" placeholder="请输入用户名"></van-tab>
+<!-- 交易记录页 -->
+      <van-tab title="交易记录">
+        <table>
+          <tr class="record_header">
+              <th><i class="iconfont icon-shijian" style="font-size:12px;"></i> 时间</th>
+              <th><i class="iconfont icon-zhifu"></i> 金额</th>
+              <th><i class="iconfont icon-richu2"></i> 操作</th>
+              <th><i class="iconfont icon-zhuyi"></i> 状态</th>
+            </tr>
+          <tr class="record_item">
+            <td>2019-11-30</td>
+            <td>1803.20 UNDT</td>
+            <td>正常</td>
+            <td>待审核</td>
+          </tr>
+          <tr class="record_item">
+            <td>2019-11-30</td>
+            <td>1803.20 UNDT</td>
+            <td>正常</td>
+            <td>待审核</td>
+          </tr>
+          <tr class="record_item">
+            <td>2019-11-30</td>
+            <td>1803.20 UNDT</td>
+            <td>正常</td>
+            <td>待审核</td>
+          </tr>
+        </table>
+      </van-tab>
+<!-- 交易记录页结束 -->
     </van-tabs>
   </div>
 </template>
 
 <script>
-import { Image, Lazyload, Loading, Tab, Tabs } from 'vant';
+import { Tab, Tabs , Picker ,Field ,Popup} from 'vant';
 export default {
   name: 'index',
   data(){
     return{
+      balance_lock:true,    //账户余额的锁
+      getWay_clicked:false, //点击选择网关变色
+      v_getWay:"",
+      v_money:"",
+      v_postscript:"",
+      v_dealer:"",
       value: "",
-      active:"",
+      showPicker: false, //控制picker隐现
+      columns: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD']
     }
   },
   components:{
-    [Image.name]:Image,
-    [Lazyload.name]:Lazyload,
-    [Loading.name]:Loading,
     [Tab.name]:Tab,
     [Tabs.name]:Tabs,
+    [Picker.name]:Picker,
+    [Field.name]:Field,
+    [Popup.name]:Popup,
+  },
+  directives:{  //自定义指令  定义点击为非指定节点的行为 v-clickoutside
+    clickoutside:{
+      bind:function(el,binding,vnode){
+          function documentHandler(e){
+              if(el.contains(e.target)){
+                  return false;
+              }
+              if(binding.expression){
+                  binding.value(e)
+              }
+          }
+          el._vueClickOutside_ = documentHandler;
+          document.addEventListener('click',documentHandler);
+      },
+      unbind:function(el,binding){
+          document.removeEventListener('click',el._vueClickOutside_);
+          delete el._vueClickOutside_;
+      }
+    }
   },
   methods:{
+    handleClean_getWay(){
+      this.getWay_clicked= false;
+    },
+    handleChoise_getWay(){
+      this.showPicker=true;
+      this.getWay_clicked= true;
+    },
+    onConfirm(getWay) {
+      this.v_getWay = getWay;
+      this.showPicker = false;
+    },
+    
 
   }
 }
@@ -63,40 +180,182 @@ export default {
 @import "@/assets/css/vant_new.scss"; //引入公共样式
 $tc:#8BF692;
 $i_bor:#7B7780;
+$font_c:#319B38;
+$order_c:#77807A;
+* {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    color: #fff;
+    font-size: 22px;
+    image {
+        width: 100%;
+        height: 100%;
+    }
+}
 //自定义样式（非vant组件）
 #index{
-  height:100%;margin:0 auto;
+  height:100%;
+  margin:0 auto;
+  //动态地图
   .header_img{
     width: 100%;
     height: 326px;
     background-image: url('../assets/img/map.gif');
-    background-size: 130% 326px;
-    background-position-x: -105px;
+    background-size: 120% 326px;
+    background-position-x: 50%;
   }
-
-  .i_input {
-    width: 90%;
-    height: 80px;
-    font-size: 28px;
-    border-color:$i_bor;
-    @include input_common;
+  /*按钮和按钮以上分开*/
+  //按钮以上部分
+  .top_part{
+    width: 85.5%;
+    max-width: 750px;
+    margin: 0 auto;
+    min-height: 688px;
+    height: 56vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    //账户余额
+    .clock{
+      width: 100%;
+      height: 120px;
+      border-radius: 12px;
+      box-sizing: border-box;
+      border: 1px solid #D4BE9B;
+      overflow: hidden;
+      margin: 0 auto;
+      background:url('../assets/img/lock.png');
+      background-size: 100% 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 30px;
+      li{
+        align-items: flex-end;
+        color: #000;
+        span{
+          color: #000;
+          font-size:24px; 
+          padding-bottom: 5px;
+          i{
+            font-size: 36px;
+            font-weight: 600;
+            color: #000;
+          }
+        }
+        .account_label{
+          display: inline-block;
+          padding-top: 20px;
+        }
+        .account_balance{
+          font-size: 60px;
+        }
+      }
+    }
+    //输入或选择部分
+    .every_form{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      li{
+        width: 150px;   
+        i{
+          font-size: 30px;
+          color: #fff;
+          margin-right: 10px;
+        }
+      }
+      .i_input {
+        width: 83%;
+        height: 80px;
+        font-size: 22px;
+        border-color:$i_bor;
+        margin-right: 10px;
+        z-index: 11;
+        @include input_common;
+      }
+      .i_input:focus,.getWay_clicked{
+        border-color:$tc;
+        box-shadow: inset $font_c 0px 0px 15px;
+        -moz-box-shadow: inset $font_c 0px 0px 15px;
+        -webkit-box-shadow: inset $font_c 0px 0px 15px;
+      }
+      .have_tip{
+        padding-bottom: 30px;
+        box-sizing: border-box;
+      }
+      .form_right_part{
+        width: 73%;
+        .select_getWay{
+          position: relative;
+          .getWay_icon_xia{
+            position: absolute;
+            top: 40%;
+            right: 80px;
+          }
+          .getWay_details{
+            width: 70px;
+            height: 30px;
+            font-size: 18px;
+            position: absolute;
+            top: 30%;
+            right: 120px;
+          }
+        }
+        
+        .form_tip{
+          display: inline-block;
+          margin-top: 10px;
+          font-size: 16px;
+          color: #7B7780;
+        }
+      }
+    }
+    .top_entrance{
+      display: flex;
+      justify-content: space-around;
+      span{
+        font-size: 22px;
+        color:$font_c;
+      }
+    }
   }
-  .i_input:focus{
-    border: 1px solid $tc;
-    box-shadow: inset $tc 0px 0px 15px;
-    -moz-box-shadow: inset $tc 0px 0px 15px;
-    -webkit-box-shadow: inset $tc 0px 0px 15px;
-  }
-
   button {
     width: 480px;
     height: 80px;
     margin: 0 auto;
+    // margin-top: 2%;
     @include button_common;
   }
-  .top_part{
-    min-height: 688px;
-    background-color: #ccc
+  table{
+    width: 100%;
+    outline: none;
+    tr{
+      border-bottom: 1px solid $order_c;
+      th{
+        width: 25%;
+        height: 82px;
+        font-size: 22px;
+        color: $order_c;
+        line-height: 82px;
+        text-align: center;
+        background-color: #232625;
+        i{
+          font-size: 26px;
+          color: $order_c;
+        }
+      }
+      td{
+        width: 25%;
+        height: 60px;
+        font-size: 22px;
+        color: #fff;
+        line-height: 60px;
+        text-align: center;
+        background-color: #282E2A;
+      }
+    }
   }
 }
 </style>
