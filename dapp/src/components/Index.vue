@@ -1,5 +1,5 @@
 <template>
-  <div id="index" style="max-width:100%;">
+  <div id="index">
     <div class="header_img"></div>
     <van-tabs swipeable>
       <van-tab title="支付网关">
@@ -11,6 +11,7 @@
               <i class="iconfont icon-suo" v-else></i>
               </span>
             </li>
+            
             <li><span class="account_balance">175056.17</span>UNDT</li>
           </div>
           <div class="every_form">
@@ -68,23 +69,35 @@
             </div>
           </div>
           <div class="top_entrance">
-            <span>新手指南</span>
+            <span @click="show = true , guide_content = true" >新手指南</span>
             <span>交易商入口</span>
           </div>
         </div>
+        
         <button>
           立即提款
         </button>
+        <van-overlay :show="show">
+          <div class="guide" @click.stop @touchmove.prevent>
+          <div class="guide_title">
+            <i class="iconfont icon-guanbi-cu" @click="show = false , guide_content = false"></i>
+            支付网关系统操作指南
+          </div>
+        </div>
+        </van-overlay>
+        <transition name="fade">
+          <Guide v-show="guide_content" transiton="fade"></Guide>
+        </transition>
       </van-tab>
 <!-- 交易记录页 -->
       <van-tab title="交易记录">
         <table>
           <tr class="record_header">
-              <th><i class="iconfont icon-shijian" style="font-size:12px;"></i> 时间</th>
-              <th><i class="iconfont icon-zhifu"></i> 金额</th>
-              <th><i class="iconfont icon-richu2"></i> 操作</th>
-              <th><i class="iconfont icon-zhuyi"></i> 状态</th>
-            </tr>
+            <th><i class="iconfont icon-shijian"></i> 时间</th>
+            <th><i class="iconfont icon-zhifu"></i> 金额</th>
+            <th><i class="iconfont icon-richu2"></i> 操作</th>
+            <th><i class="iconfont icon-zhuyi"></i> 状态</th>
+          </tr>
           <tr class="record_item">
             <td>2019-11-30</td>
             <td>1803.20 UNDT</td>
@@ -111,7 +124,8 @@
 </template>
 
 <script>
-import { Tab, Tabs , Picker ,Field ,Popup} from 'vant';
+import { Tab, Tabs , Picker ,Field ,Popup, Overlay } from 'vant';
+import Guide from './guide';
 export default {
   name: 'index',
   data(){
@@ -124,7 +138,10 @@ export default {
       v_dealer:"",
       value: "",
       showPicker: false, //控制picker隐现
-      columns: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD']
+      show:false,
+      guide_content:false,
+      columns: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD'],
+      
     }
   },
   components:{
@@ -133,6 +150,8 @@ export default {
     [Picker.name]:Picker,
     [Field.name]:Field,
     [Popup.name]:Popup,
+    [Overlay.name]:Overlay,
+    Guide,
   },
   directives:{  //自定义指令  定义点击为非指定节点的行为 v-clickoutside
     clickoutside:{
@@ -166,8 +185,6 @@ export default {
       this.v_getWay = getWay;
       this.showPicker = false;
     },
-    
-
   }
 }
 </script>
@@ -182,6 +199,7 @@ $tc:#8BF692;
 $i_bor:#7B7780;
 $font_c:#319B38;
 $order_c:#77807A;
+$g_c:#666;
 * {
     padding: 0;
     margin: 0;
@@ -210,12 +228,13 @@ $order_c:#77807A;
   .top_part{
     width: 85.5%;
     max-width: 750px;
-    margin: 0 auto;
+    margin: 0 auto 15px;
     min-height: 688px;
     height: 56vh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    
     //账户余额
     .clock{
       width: 100%;
@@ -316,11 +335,51 @@ $order_c:#77807A;
       display: flex;
       justify-content: space-around;
       span{
-        font-size: 22px;
+        font-size: 28px;
         color:$font_c;
       }
     }
   }
+  .guide{
+    width: 600px;
+    height: 945px;
+    color:$g_c;
+    background-color: #fff;
+    border-radius: 30px;
+    margin: 20% auto;
+    padding: 0 18px;
+    position: relative;
+    transition: all .1s !important;
+    .guide_title{
+      width: 100%;
+      height: 80px;
+      color:#333;
+      display: flex;
+      align-items: center;
+      font-size: 26px;
+      letter-spacing: 2px;
+      justify-content: center;
+      text-align: center;
+      border-bottom: 1px solid $g_c;
+      i{
+        position: absolute;
+        left: 30px;
+        font-size: 22px;
+        color: #000;
+        font-weight: 600;
+      }
+    }
+  }
+    //遮罩层过度
+    .fade-enter-active{
+      transition: all .08s !important;
+    }
+    .fade-leave-active {
+      transition: all 0s !important;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+      opacity: 0;
+    }
   button {
     width: 480px;
     height: 80px;
@@ -344,6 +403,10 @@ $order_c:#77807A;
         i{
           font-size: 26px;
           color: $order_c;
+        }
+        .icon-shijian{
+          font-size: 20px;
+          font-weight: 600
         }
       }
       td{
