@@ -10,8 +10,7 @@
               <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
               <i class="iconfont icon-suo" v-else></i>
               </span>
-            </li>
-            
+            </li>     
             <li><span class="account_balance">175056.17</span>UNDT</li>
           </div>
           <div class="every_form">
@@ -23,18 +22,17 @@
               <div class="select_getWay">
                 <input readonly :class="`i_input ${getWay_clicked?'getWay_clicked':''}`" placeholder="选择网关" v-model="v_getWay" @click="handleChoise_getWay" >
                 <span class="getWay_icon_xia" @click="handleChoise_getWay"><i class="iconfont icon-xia-copy"></i></span>
-                <button class="getWay_details">详情</button>
-                <span>添加</span><br>
+                <button class="getWay_details" @click="getway_detail = true">详情</button>
+                <span @click="getways= true">添加</span><br>
               </div>
               <van-popup v-model="showPicker" position="bottom">
                 <van-picker
                   show-toolbar
-                  :columns="columns"
+                  :columns="getway_list"
                   @cancel="showPicker = false"
                   @confirm="onConfirm"
                 />
               </van-popup>
-              
               <span class="form_tip">参考汇率：1 UNDT = 0保证金：1%</span>
             </div>
           </div>
@@ -65,30 +63,19 @@
             </li>
             <div class="form_right_part">
               <input type="text" class="i_input" id="dealer" v-model="v_dealer" placeholder="系统推荐">
-              <span>查看</span><br>
+              <span @click="merchant_show = true">查看</span><br>
             </div>
           </div>
           <div class="top_entrance">
-            <span @click="show = true , guide_content = true" >新手指南</span>
+            <span @click="showGuide = true , guide_content = true" >新手指南</span>
             <span>交易商入口</span>
           </div>
         </div>
-        
-        <button>
+        <button @click="confirm">
           立即提款
         </button>
-        <van-overlay :show="show">
-          <div class="guide" @click.stop @touchmove.prevent>
-          <div class="guide_title">
-            <i class="iconfont icon-guanbi-cu" @click="show = false , guide_content = false"></i>
-            支付网关系统操作指南
-          </div>
-        </div>
-        </van-overlay>
-        <transition name="fade">
-          <Guide v-show="guide_content" transiton="fade"></Guide>
-        </transition>
       </van-tab>
+
 <!-- 交易记录页 -->
       <van-tab title="交易记录">
         <table>
@@ -98,7 +85,7 @@
             <th><i class="iconfont icon-richu2"></i> 操作</th>
             <th><i class="iconfont icon-zhuyi"></i> 状态</th>
           </tr>
-          <tr class="record_item">
+          <tr class="record_item" @click="record_detail= true">
             <td>2019-11-30</td>
             <td>1803.20 UNDT</td>
             <td>正常</td>
@@ -120,12 +107,41 @@
       </van-tab>
 <!-- 交易记录页结束 -->
     </van-tabs>
+    <!-- 遮罩层 -->
+    <van-overlay :show="showGuide">
+      <div class="guide">
+        <div class="guide_title">
+          <i class="iconfont icon-guanbi-cu" @click="showGuide = false , guide_content = false"></i>
+          支付网关系统操作指南
+        </div>
+      </div>
+    </van-overlay>
+     <!-- 网关详情 -->
+    <van-overlay :show="getway_detail" @click="getway_detail = false">
+      <Getwaydetails></Getwaydetails>
+    </van-overlay>
+    <!-- 新手指南 -->
+    <transition name="fade">
+      <Guide v-show="guide_content" transiton="fade"></Guide>
+    </transition>
+    <!-- 交易商 -->
+    <Merchant v-show="merchant_show" @closeOverly='merchant_show = false'></Merchant>
+    <!-- 订单详情 -->
+    <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
+    <!-- 添加网关 -->
+    <Getways v-show="getways" @closeGetways="getways= false"></Getways>
+    <!-- 提示框 -->
+    <van-toast id="custom-selector"/>
   </div>
 </template>
 
 <script>
-import { Tab, Tabs , Picker ,Field ,Popup, Overlay } from 'vant';
+import { Tab, Tabs , Picker ,Field ,Popup, Overlay, Toast } from 'vant';
 import Guide from './guide';
+import Merchant from './merchant';
+import Orderdetails from './orderdetails';
+import Getwaydetails from './getwaydetails';
+import Getways from './getways';
 export default {
   name: 'index',
   data(){
@@ -138,9 +154,14 @@ export default {
       v_dealer:"",
       value: "",
       showPicker: false, //控制picker隐现
-      show:false,
+      showGuide:false,
       guide_content:false,
-      columns: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD'],
+      merchant_show:false, //商家显示
+      record_detail:false, //订单详情
+      getway_detail:false, //网关详情
+      getways:false,        //添加网关
+
+      getway_list: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD'],
       
     }
   },
@@ -152,8 +173,13 @@ export default {
     [Popup.name]:Popup,
     [Overlay.name]:Overlay,
     Guide,
+    Merchant,
+    Orderdetails,
+    Getwaydetails,
+    Getways,
   },
-  directives:{  //自定义指令  定义点击为非指定节点的行为 v-clickoutside
+   //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
+  directives:{ 
     clickoutside:{
       bind:function(el,binding,vnode){
           function documentHandler(e){
@@ -174,6 +200,18 @@ export default {
     }
   },
   methods:{
+    //立即提款
+    confirm(){
+      Toast.loading({
+        // duration: 0,       // 持续展示 toast
+        forbidClick: true,    // 禁用背景点击
+        message: '提现成功',
+        type: 'success',
+        selector: '#custom-selector'
+      });
+    },
+
+
     handleClean_getWay(){
       this.getWay_clicked= false;
     },
@@ -278,7 +316,9 @@ $g_c:#666;
       justify-content: space-between;
       align-items: center;
       li{
-        width: 150px;   
+        width: 150px;
+        display: flex;
+        align-items: center;
         i{
           font-size: 30px;
           color: #fff;
@@ -315,8 +355,10 @@ $g_c:#666;
           }
           .getWay_details{
             width: 70px;
-            height: 30px;
+            height: 40px;
             font-size: 18px;
+            padding-top: 2px;
+            box-sizing: border-box;
             position: absolute;
             top: 30%;
             right: 120px;
