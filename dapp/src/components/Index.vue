@@ -6,7 +6,7 @@
         <div class="top_part">
           <div class="clock">
             <li>
-              <span class="account_label">账户余额&nbsp&nbsp&nbsp
+              <span class="account_label">账户余额&nbsp;&nbsp;&nbsp;
               <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
               <i class="iconfont icon-suo" v-else></i>
               </span>
@@ -50,7 +50,7 @@
           <div class="every_form">
             <li>
               <i class="iconfont icon-beizhu1"></i>
-              <label for="postscript">备&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp注</label>
+              <label for="postscript">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
             </li>
             <div class="form_right_part">
               <input type="text" class="i_input" id="postscript" v-model="v_postscript" placeholder="输入附言，70字以内">
@@ -59,7 +59,7 @@
           <div class="every_form">
             <li>
               <i class="iconfont icon-tubiaozhizuomoban" style="font-weight:600;"></i>
-              <label for="dealer">交&nbsp&nbsp易&nbsp&nbsp商</label>
+              <label for="dealer">交&nbsp;&nbsp;易&nbsp;&nbsp;商</label>
             </li>
             <div class="form_right_part">
               <input type="text" class="i_input" id="dealer" v-model="v_dealer" placeholder="系统推荐">
@@ -75,7 +75,6 @@
           立即提款
         </button>
       </van-tab>
-
 <!-- 交易记录页 -->
       <van-tab title="交易记录">
         <table>
@@ -131,47 +130,44 @@
     <!-- 添加网关 -->
     <Getways v-show="getways" @closeGetways="getways= false"></Getways>
     <!-- 提示框 -->
-    <van-toast id="custom-selector"/>
+    <van-toast id="van-toast"/>
   </div>
 </template>
-
 <script>
-import { Tab, Tabs , Picker ,Field ,Popup, Overlay, Toast } from 'vant';
-import Guide from './guide';
-import Merchant from './merchant';
-import Orderdetails from './orderdetails';
-import Getwaydetails from './getwaydetails';
-import Getways from './getways';
+import { Tab, Tabs, Picker, Field, Popup, Overlay} from 'vant'
+import Guide from './guide'
+import Merchant from './merchant'
+import Orderdetails from './orderdetails'
+import Getwaydetails from './getwaydetails'
+import Getways from './getways'
 export default {
   name: 'index',
-  data(){
+  data () {
     return{
-      balance_lock:true,    //账户余额的锁
-      getWay_clicked:false, //点击选择网关变色
-      v_getWay:"",
-      v_money:"",
-      v_postscript:"",
-      v_dealer:"",
-      value: "",
-      showPicker: false, //控制picker隐现
-      showGuide:false,
-      guide_content:false,
-      merchant_show:false, //商家显示
-      record_detail:false, //订单详情
-      getway_detail:false, //网关详情
-      getways:false,        //添加网关
-
-      getway_list: ['CHINA-LB-CNY','HONGKONG-LB-HKD','HONGKONG-WP-HKD'],
-      
+      balance_lock: true,    // 账户余额的锁
+      getWay_clicked: false, // 点击选择网关变色
+      v_getWay: '',
+      v_money: '',
+      v_postscript: '',
+      v_dealer: '',
+      value:  '',
+      showPicker: false, // 控制picker隐现
+      showGuide: false,     // 新手指南框
+      guide_content: false, // 新手指南内容
+      merchant_show: false, // 商家显示
+      record_detail: false, // 订单详情
+      getway_detail: false, // 网关详情
+      getways: false,       // 添加网关
+      getway_list: ['CHINA-LB-CNY', 'HONGKONG-LB-HKD', 'HONGKONG-WP-HKD'],
     }
   },
   components:{
-    [Tab.name]:Tab,
-    [Tabs.name]:Tabs,
-    [Picker.name]:Picker,
-    [Field.name]:Field,
-    [Popup.name]:Popup,
-    [Overlay.name]:Overlay,
+    [Tab.name]: Tab,
+    [Tabs.name]: Tabs,
+    [Picker.name]: Picker,
+    [Field.name]: Field,
+    [Popup.name]: Popup,
+    [Overlay.name]: Overlay,
     Guide,
     Merchant,
     Orderdetails,
@@ -179,11 +175,11 @@ export default {
     Getways,
   },
    //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
-  directives:{ 
-    clickoutside:{
-      bind:function(el,binding,vnode){
-          function documentHandler(e){
-              if(el.contains(e.target)){
+  directives: { 
+    clickoutside: {
+      bind:function (el,binding,vnode) {
+          function documentHandler (e) {
+              if (el.contains (e.target)) {
                   return false;
               }
               if(binding.expression){
@@ -194,42 +190,36 @@ export default {
           document.addEventListener('click',documentHandler);
       },
       unbind:function(el,binding){
-          document.removeEventListener('click',el._vueClickOutside_);
+          document.removeEventListener('click',el._vueClickOutside_)
           delete el._vueClickOutside_;
       }
     }
   },
   methods:{
     //立即提款
-    confirm(){
-      Toast.loading({
+    confirm () {
+      this.$toast({
         // duration: 0,       // 持续展示 toast
         forbidClick: true,    // 禁用背景点击
         message: '提现成功',
         type: 'success',
-        selector: '#custom-selector'
+        selector: '#van-toast'
       });
     },
-
-
-    handleClean_getWay(){
-      this.getWay_clicked= false;
+    handleClean_getWay () {
+      this.getWay_clicked= false
     },
-    handleChoise_getWay(){
-      this.showPicker=true;
-      this.getWay_clicked= true;
+    handleChoise_getWay () {
+      this.showPicker= true;
+      this.getWay_clicked= true
     },
-    onConfirm(getWay) {
+    onConfirm (getWay) {
       this.v_getWay = getWay;
-      this.showPicker = false;
+      this.showPicker = false
     },
   }
 }
 </script>
-
-
-
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped >
 @import "@/assets/css/vant_new.scss"; //引入公共样式
@@ -272,7 +262,6 @@ $g_c:#666;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    
     //账户余额
     .clock{
       width: 100%;
@@ -292,7 +281,7 @@ $g_c:#666;
         color: #000;
         span{
           color: #000;
-          font-size:24px; 
+          font-size: 24px;
           padding-bottom: 5px;
           i{
             font-size: 36px;
@@ -364,7 +353,6 @@ $g_c:#666;
             right: 120px;
           }
         }
-        
         .form_tip{
           display: inline-block;
           margin-top: 10px;

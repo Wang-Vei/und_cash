@@ -8,8 +8,9 @@ import '@/assets/css/reset.css';
 import '@/assets/css/border.css';
 import '@/assets/css/vant_new.scss';
 import '@/assets/css/iconfont.css';
-// import { Lazyload } from 'vant';
-// Vue.use(Lazyload);
+import '@/assets/js/gate-way.js';
+import { Toast } from 'vant';
+Vue.use(Toast);
 
 
 fastClick.attach(document.body); //防止移动端300ms的点击延迟
