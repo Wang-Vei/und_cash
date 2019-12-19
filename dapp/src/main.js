@@ -9,6 +9,11 @@ import '@/assets/css/border.css';
 import '@/assets/css/vant_new.scss';
 import '@/assets/css/iconfont.css';
 import '@/assets/js/gate-way.js';
+import '@/assets/js/abi/abi_c2c.js';
+import '@/assets/js/abi/abi_undt.js';
+import '@/assets/js/coin/c2c.js';
+import '@/assets/js/coin/common.js';
+import '@/assets/js/base.js';
 import { Toast } from 'vant';
 Vue.use(Toast);
 
