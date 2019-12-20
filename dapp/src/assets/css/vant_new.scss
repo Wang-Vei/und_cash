@@ -1,0 +1,327 @@
+$tc:#8BF692;
+$font_c:#319B38;
+$i_bor:#7B7780;
+* {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-size: 22px;
+    image {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+//button的公共样式
+@mixin button_common {
+    display: block;
+    outline: none;
+    border: 0;
+    color: #fff;
+    font-size: 30px;
+    background-color: $font_c;
+    border-radius: 40px;
+    letter-spacing: 2px;
+}
+
+//input的公共样式
+@mixin input_common {
+    color: #fff;
+    outline: none;
+    padding-left: 20px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid $i_bor;
+    background-color: transparent;
+}
+
+//主页组件（修改组件默认样式）
+#index {
+    /*导航栏组件标签部分*/
+    .van-tabs__wrap {
+        height: 79px;
+    }
+    /*导航栏*/
+    .van-tabs__nav {
+        background-color: transparent;
+        border-bottom: 0;
+    }
+    /*默认下边框*/
+    .van-tabs__line {
+        width: 0 !important;
+        z-index: 0;
+    }
+    /*所有标签头*/
+    .van-tab {
+        border-bottom: 2px solid $i_bor;
+        color: $i_bor;
+        font-size: 24px;
+        line-height: 79px;
+    }
+    /*选中的标签头*/
+    .van-tab--active {
+        border-bottom: 2px solid $font_c;
+        color: $font_c;
+    }
+    /*不能写在组件title中的icon*/
+    /*公用样式*/
+    @mixin tab_common {
+        font-family: 'iconfont';
+        display: block;
+        font-size: 30px;
+        top: 0;
+        position: absolute;
+    }
+    .van-tab:first-child::before {
+        content: "\e603";
+        /*调用公用样式*/
+        @include tab_common;
+        font-weight: 600;
+        left: 26%;
+    }
+    .van-tab:nth-child(2)::before {
+        content: "\e61b";
+        /*调用公用样式*/
+        @include tab_common;
+        left: 28%;
+    }
+    /*选项卡内容*/
+    .van-tab__pane,
+    .van-tab__pane-wrapper {
+        width: 100%;
+        height: 100vw;
+        max-height: 820px;
+        margin: 0 auto;
+    }
+    /*选择网关的上弹框样式*/
+    .van-popup {
+        height: 45%;
+        .van-picker {
+            .van-picker__toolbar {
+                height: 80px;
+                button {
+                    font-size: 28px;
+                    letter-spacing: 2px;
+                    color: $font_c;
+                }
+            }
+            .van-picker__columns {
+                .van-picker-column {
+                    ul {
+                        li {
+                            font-size: 28px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #Getways {
+        .van-tabs--line .van-tabs__wrap {
+            height: 70px;
+        }
+        /*导航栏*/
+        .van-tabs__nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: transparent;
+            border-bottom: 0;
+        }
+        // /*默认下边框*/
+        .van-tabs__line {
+            width: 18% !important;
+            background-color: green;
+        }
+        /*所有标签头*/
+        .van-tab {
+            max-width: 15%;
+            border-bottom: 0;
+            color: $i_bor;
+            font-size: 20px;
+            line-height: 90px;
+        }
+        .van-hairline--top-bottom::after,
+        .van-hairline-unset--top-bottom::after {
+            border-width: 0;
+        }
+        .van-tab:first-child::before,
+        .van-tab:nth-child(2)::before {
+            content: "";
+        }
+        /*选中的标签头*/
+        .van-tab--active {
+            color: $font_c;
+        }
+        /*选项卡内容*/
+        .van-tab__pane,
+        .van-tab__pane-wrapper {
+            width: 100%;
+            height: 100vw;
+            max-height: 820px;
+            margin: 0 auto;
+        }
+        //设置网关的公共样式
+        .content_info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0 auto 20px;
+            // background-color: palegreen;
+            div {
+                height: 50px;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                label {
+                    display: inline-block;
+                    width: 25%;
+                    text-align: right;
+                }
+                .right_option {
+                    width: 70%;
+                    position: relative;
+                    .getWay_icon_xia {
+                        position: absolute;
+                        top: 25%;
+                        right: 30px;
+                        .icon-xia-copy {
+                            font-size: 18px;
+                        }
+                    }
+                    .i_input {
+                        width: 400px;
+                        height: 50px;
+                        color: #999 !important;
+                        font-size: 20px;
+                        outline: none;
+                        border-color: $i_bor;
+                        margin-right: 10px;
+                        // z-index: 11;
+                        @include input_common;
+                    }
+                     ::-webkit-input-placeholder {
+                        /* WebKit browsers */
+                        color: #999;
+                    }
+                     :-moz-placeholder {
+                        /* Mozilla Firefox 4 to 18 */
+                        color: #999;
+                    }
+                     ::-moz-placeholder {
+                        /* Mozilla Firefox 19+ */
+                        color: #999;
+                    }
+                     :-ms-input-placeholder {
+                        /* Internet Explorer 10+ */
+                        color: #999;
+                    }
+                    select {
+                        appearance: none;
+                        -moz-appearance: none;
+                        -webkit-appearance: none;
+                    }
+                    .i_input:focus,
+                    .area_clicked {
+                        border-color: $tc;
+                        box-shadow: inset $font_c 0px 0px 15px;
+                        -moz-box-shadow: inset $font_c 0px 0px 15px;
+                        -webkit-box-shadow: inset $font_c 0px 0px 15px;
+                    }
+                }
+            }
+        }
+        .QRcode_part {
+            width: 90%;
+            height: 65px;
+            margin: 55px auto 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            div {
+                width: 100%;
+                height: 55px;
+                display: flex;
+                justify-content: space-between;
+                label {
+                    line-height: 65px;
+                    display: inline-block;
+                    width: 25%;
+                    text-align: right;
+                }
+                span {
+                    line-height: 65px;
+                    display: inline-block;
+                    width: 70%;
+                    color: #319B38;
+                    text-align: left;
+                }
+                .bit_tip {
+                    line-height: 30px;
+                    font-size: 16px;
+                }
+            }
+        }
+        .getway_necessarily {
+            width: 90%;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            top: 66%;
+            div {
+                width: 100%;
+                height: 52px;
+                display: flex;
+                justify-content: space-between;
+                label {
+                    line-height: 52px;
+                    display: inline-block;
+                    width: 25%;
+                    text-align: right;
+                }
+                span {
+                    line-height: 52px;
+                    display: inline-block;
+                    width: 70%;
+                    text-align: left;
+                }
+            }
+            .button_area {
+                height: 125px;
+                width: 100%;
+                button {
+                    width: 388px;
+                    height: 60px;
+                    margin: 40px auto 0;
+                    font-size: 26px !important;
+                    @include button_common;
+                }
+            }
+        }
+    }
+}
+
+//提示
+.van-toast {
+    width: 160px;
+    min-width: 160px;
+    height: 160px;
+    .van-toast__icon {
+        font-size: 80px;
+        margin-bottom: 15px;
+    }
+    .van-toast__loading {
+        width: 150px;
+        height: 120px;
+    }
+    .van-toast__text {
+        font-size: 22px;
+    }
+}
