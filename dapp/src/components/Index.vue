@@ -1,3 +1,4 @@
+
 <template>
   <div id="index">
     <div class="header_img"></div>
@@ -11,7 +12,7 @@
               <i class="iconfont icon-suo" v-else></i>
               </span>
             </li>     
-            <li><span class="account_balance">175056.17</span>UNDT</li>
+            <li><span class="account_balance">{{balance}}</span>UNDT</li>
           </div>
           <div class="every_form">
             <li class="have_tip">
@@ -134,16 +135,27 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { Tab, Tabs, Picker, Field, Popup, Overlay} from 'vant'
 import Guide from './guide'
 import Merchant from './merchant'
 import Orderdetails from './orderdetails'
 import Getwaydetails from './getwaydetails'
 import Getways from './getways'
+
+import {getWeb3, getContract} from '@/assets/js/web3_init.js';
+import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
+import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
+import {authorize_coin,balance_undt,ethAccounts,authorize_coin_num} from '@/assets/js/coin/c2c.js';
+import {CONFIG} from "@/assets/js/config.js"
+import Web3 from 'web3';
+
 export default {
   name: 'index',
   data () {
     return{
+      address:"",            //地址
+      balance:"",            //账户余额
       balance_lock: true,    // 账户余额的锁
       getWay_clicked: false, // 点击选择网关变色
       v_getWay: '',
@@ -195,6 +207,42 @@ export default {
       }
     }
   },
+  mounted(){
+    var version = Web3.version.api;
+    console.log(version);
+    console.log(CONFIG);
+    let init_exchange = async() => {
+        try {
+            //实例化web3
+            // console.log(getWeb3);
+            window.web3 = await getWeb3();
+            // 实例化需要用到的合约
+            window.Contract_undt = await getContract(abi_undt, CONFIG['undt_addr']);
+            // console.log(window.Contract_undt);return;
+            window.Contract_c2c = await getContract(abi_c2c, CONFIG['c2c_addr']);
+            //调用合约方法
+            let account = await ethAccounts();
+            // $("#address").val(account);
+            this.address = account;
+            let num = await balance_undt(account);
+            // $('#balance').text(num);
+            this.balance=num;
+            let authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
+
+            authorize_num = Number(authorize_num);
+            console.log(authorize_num);
+
+            // if (authorize_num <= 100) {
+                // $('#unlock').css('display', 'block');
+            // }
+            // orderList();
+        }
+        catch (e) {
+            console.log(e);
+        }
+      };
+      init_exchange();
+  },
   methods:{
     //立即提款
     confirm () {
@@ -207,10 +255,10 @@ export default {
       });
     },
     handleClean_getWay () {
-      this.getWay_clicked= false
+      this.getWay_clicked = false
     },
     handleChoise_getWay () {
-      this.showPicker= true;
+      this.showPicker = true;
       this.getWay_clicked= true
     },
     onConfirm (getWay) {

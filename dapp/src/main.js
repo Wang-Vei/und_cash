@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
@@ -14,6 +15,7 @@ import '@/assets/js/abi/abi_undt.js';
 import '@/assets/js/coin/c2c.js';
 import '@/assets/js/coin/common.js';
 import '@/assets/js/base.js';
+import '@/assets/js/config.js';
 import { Toast } from 'vant';
 Vue.use(Toast);
 

@@ -1,11 +1,13 @@
-async function getContract(abi,addr){
-    return new Promise(function (resolve, reject) {
-        let contract =  new window.web3.eth.Contract(abi, addr);
+/* eslint-disable */
+import Web3 from 'web3';
+export async function getContract(abi, addr) {
+    return new Promise(function(resolve, reject) {
+        let contract = new window.web3.eth.Contract(abi, addr);
         resolve(contract);
     });
 }
 
-async function getWeb3() {
+export async function getWeb3() {
     let err = null;
     if (window.ethereum) {
         window.web3 = new Web3(ethereum);
@@ -26,8 +28,8 @@ async function getWeb3() {
         window.web3 = await new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/71b7dcb12a69469aa61af1e049759342"));
     }
 
-    return new Promise(function (resolve, reject) {
-        if(err){
+    return new Promise(function(resolve, reject) {
+        if (err) {
             return reject(error);
         }
 

@@ -1,22 +1,19 @@
-var abi_undt = [
-    {
+/* eslint-disable */
+export const abi_undt = [{
         "constant": true,
         "inputs": [],
         "name": "name",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "string"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_spender",
                 "type": "address"
             },
@@ -26,24 +23,20 @@ var abi_undt = [
             }
         ],
         "name": "approve",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "setOwner",
         "outputs": [],
         "payable": false,
@@ -54,24 +47,20 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "totalSupply",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_amount",
+            "type": "uint256"
+        }],
         "name": "setTotalSupplyLimit",
         "outputs": [],
         "payable": false,
@@ -82,20 +71,17 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "uniondaoTokenContract",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_from",
                 "type": "address"
             },
@@ -109,12 +95,10 @@ var abi_undt = [
             }
         ],
         "name": "transferFrom",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -123,31 +107,25 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "decimals",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint8"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint8"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_value",
+            "type": "uint256"
+        }],
         "name": "burn",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -156,39 +134,32 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "manager",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "name": "balanceOf",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_target",
                 "type": "address"
             },
@@ -198,20 +169,17 @@ var abi_undt = [
             }
         ],
         "name": "mintToken",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_to",
                 "type": "address"
             },
@@ -225,12 +193,10 @@ var abi_undt = [
             }
         ],
         "name": "transferAndSendMsg",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -239,12 +205,10 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "owner",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
@@ -253,39 +217,32 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "symbol",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "string"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "name": "gather",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "token",
                 "type": "address"
             },
@@ -302,12 +259,10 @@ var abi_undt = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "setGather",
         "outputs": [],
         "payable": false,
@@ -316,12 +271,10 @@ var abi_undt = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "setIssueContract",
         "outputs": [],
         "payable": false,
@@ -330,8 +283,7 @@ var abi_undt = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_to",
                 "type": "address"
             },
@@ -341,24 +293,20 @@ var abi_undt = [
             }
         ],
         "name": "transfer",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_symbol",
-                "type": "string"
-            }
-        ],
+        "inputs": [{
+            "name": "_symbol",
+            "type": "string"
+        }],
         "name": "setSymbol",
         "outputs": [],
         "payable": false,
@@ -369,12 +317,10 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "totalSupplyLimit",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
@@ -383,24 +329,20 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "issueContract",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_name",
-                "type": "string"
-            }
-        ],
+        "inputs": [{
+            "name": "_name",
+            "type": "string"
+        }],
         "name": "setName",
         "outputs": [],
         "payable": false,
@@ -409,8 +351,7 @@ var abi_undt = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_spender",
                 "type": "address"
             },
@@ -424,12 +365,10 @@ var abi_undt = [
             }
         ],
         "name": "approveAndCall",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -438,20 +377,17 @@ var abi_undt = [
         "constant": true,
         "inputs": [],
         "name": "pauseMint",
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_to",
                 "type": "uint256"
             },
@@ -465,24 +401,20 @@ var abi_undt = [
             }
         ],
         "name": "transferAndSendMsgByAccount",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "setManager",
         "outputs": [],
         "payable": false,
@@ -491,12 +423,10 @@ var abi_undt = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "setUniondaoTokenContract",
         "outputs": [],
         "payable": false,
@@ -505,8 +435,7 @@ var abi_undt = [
     },
     {
         "constant": true,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "",
                 "type": "address"
             },
@@ -516,24 +445,20 @@ var abi_undt = [
             }
         ],
         "name": "allowance",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_pause",
-                "type": "bool"
-            }
-        ],
+        "inputs": [{
+            "name": "_pause",
+            "type": "bool"
+        }],
         "name": "setPauseMint",
         "outputs": [],
         "payable": false,
@@ -541,8 +466,7 @@ var abi_undt = [
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "initialSupply",
                 "type": "uint256"
             },
@@ -566,8 +490,7 @@ var abi_undt = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "name": "from",
                 "type": "address"
@@ -588,8 +511,7 @@ var abi_undt = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "name": "from",
                 "type": "address"
@@ -605,8 +527,7 @@ var abi_undt = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "name": "_from",
                 "type": "address"
@@ -632,8 +553,7 @@ var abi_undt = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "name": "owner",
                 "type": "address"
@@ -654,73 +574,61 @@ var abi_undt = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "pause",
-                "type": "bool"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "pause",
+            "type": "bool"
+        }],
         "name": "SetPauseMint",
         "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "add",
+            "type": "address"
+        }],
         "name": "SetManager",
         "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "add",
+            "type": "address"
+        }],
         "name": "SetOwner",
         "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "add",
+            "type": "address"
+        }],
         "name": "SetIssueContract",
         "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "add",
+            "type": "address"
+        }],
         "name": "SetUniondaoTokenContract",
         "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "indexed": false,
+            "name": "amount",
+            "type": "uint256"
+        }],
         "name": "SetTotalSupplyLimit",
         "type": "event"
     }

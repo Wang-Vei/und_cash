@@ -1,3 +1,8 @@
+/* eslint-disable */
+import { CONFIG } from "./config.js"
+import { abi_c2c } from "./abi/abi_c2c.js"
+import { abi_undt } from "./abi/abi_undt.js"
+import Web3 from 'web3';
 window.addEventListener('load', async() => {
     // Modern dapp browsers...
     if (window.ethereum) {
@@ -23,9 +28,12 @@ window.addEventListener('load', async() => {
 });
 
 function init() {
-
-    c2c_addr = CONFIG.c2c_addr;
-    undt_addr = CONFIG.undt_addr;
-    Contract_c2c = new web3.eth.Contract(abi_c2c, c2c_addr); //合约
-    Contract_undt = new web3.eth.Contract(abi_undt, undt_addr); //合约
+    let c2c_addr = CONFIG.c2c_addr;
+    console.log(c2c_addr);
+    let undt_addr = CONFIG.undt_addr;
+    let Contract_c2c = new web3.eth.Contract(abi_c2c, c2c_addr); //合约
+    console.log(Contract_c2c);
+    let Contract_undt = new web3.eth.Contract(abi_undt, undt_addr); //合约
+    // let Contract_undt = new web3.eth.Contract(abi_undt, undt_addr); //合约
+    // let Contract_c2c = new web3.eth.Contract(abi_c2c, c2c_addr); //合约
 }

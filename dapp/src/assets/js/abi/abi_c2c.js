@@ -1,65 +1,52 @@
-var abi_c2c = [
-    {
+/* eslint-disable */
+export const abi_c2c = [{
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "name": "id_address",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "appealOrder_Wrong",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "appealOrder_NoReceive",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_orderNum",
                 "type": "uint256"
             },
@@ -69,20 +56,17 @@ var abi_c2c = [
             }
         ],
         "name": "closeAppealOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_agent",
                 "type": "address"
             },
@@ -100,20 +84,17 @@ var abi_c2c = [
             }
         ],
         "name": "updateMerchant",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_merchant",
                 "type": "address"
             },
@@ -127,12 +108,10 @@ var abi_c2c = [
             }
         ],
         "name": "setMerchant",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -141,20 +120,17 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "watingBurnAmount",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_orderNum",
                 "type": "uint256"
             },
@@ -164,20 +140,17 @@ var abi_c2c = [
             }
         ],
         "name": "completeOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_merchantID",
                 "type": "uint256"
             },
@@ -203,12 +176,10 @@ var abi_c2c = [
             }
         ],
         "name": "beginOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -217,27 +188,22 @@ var abi_c2c = [
         "constant": false,
         "inputs": [],
         "name": "withdrawShare",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "name": "Statisticss",
-        "outputs": [
-            {
+        "outputs": [{
                 "name": "orders",
                 "type": "uint32"
             },
@@ -256,8 +222,7 @@ var abi_c2c = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_gateway",
                 "type": "string"
             },
@@ -291,20 +256,17 @@ var abi_c2c = [
             }
         ],
         "name": "updateGatewayInfoBase",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_orderNum",
                 "type": "uint256"
             },
@@ -314,20 +276,17 @@ var abi_c2c = [
             }
         ],
         "name": "appealOrderAnswer",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_add",
                 "type": "address"
             },
@@ -353,12 +312,10 @@ var abi_c2c = [
             }
         ],
         "name": "queryAllOrder",
-        "outputs": [
-            {
-                "name": "_return_order",
-                "type": "uint256[256]"
-            }
-        ],
+        "outputs": [{
+            "name": "_return_order",
+            "type": "uint256[256]"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
@@ -367,12 +324,10 @@ var abi_c2c = [
         "constant": false,
         "inputs": [],
         "name": "registerMerchant",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -381,39 +336,32 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "manager",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_amount",
+            "type": "uint256"
+        }],
         "name": "addBond",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_orderNum",
                 "type": "uint256"
             },
@@ -423,39 +371,32 @@ var abi_c2c = [
             }
         ],
         "name": "lockOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "name": "rsaKeys",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "string"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_gateway",
                 "type": "string"
             },
@@ -481,12 +422,10 @@ var abi_c2c = [
             }
         ],
         "name": "setMerchantOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -495,50 +434,40 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "addressShare",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "payOrderByChecker",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "cancelOrderByCustomer",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -547,12 +476,10 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "merchantCount",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
@@ -561,20 +488,17 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "owner",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_orderNum",
                 "type": "uint256"
             },
@@ -584,12 +508,10 @@ var abi_c2c = [
             }
         ],
         "name": "arbitrate",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -598,46 +520,37 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "orderNum",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_add",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "_add",
+            "type": "address"
+        }],
         "name": "changeOwner",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "name": "orders",
-        "outputs": [
-            {
+        "outputs": [{
                 "name": "orderInfo",
                 "type": "string"
             },
@@ -684,8 +597,7 @@ var abi_c2c = [
     },
     {
         "constant": true,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "",
                 "type": "string"
             },
@@ -695,8 +607,7 @@ var abi_c2c = [
             }
         ],
         "name": "merchantOrders",
-        "outputs": [
-            {
+        "outputs": [{
                 "name": "gateway",
                 "type": "string"
             },
@@ -731,27 +642,22 @@ var abi_c2c = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "payOrderByCustomer",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_add",
                 "type": "address"
             },
@@ -761,12 +667,10 @@ var abi_c2c = [
             }
         ],
         "name": "changeManager",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -775,20 +679,17 @@ var abi_c2c = [
         "constant": true,
         "inputs": [],
         "name": "balance",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_status",
                 "type": "bool"
             },
@@ -822,20 +723,17 @@ var abi_c2c = [
             }
         ],
         "name": "queryAllMerchantOrders",
-        "outputs": [
-            {
-                "name": "_return_order",
-                "type": "uint256[9][256]"
-            }
-        ],
+        "outputs": [{
+            "name": "_return_order",
+            "type": "uint256[9][256]"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "name": "_gateway",
                 "type": "string"
             },
@@ -845,103 +743,82 @@ var abi_c2c = [
             }
         ],
         "name": "setMerchantOnline",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "refundOrder",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_orderNum",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_orderNum",
+            "type": "uint256"
+        }],
         "name": "cancelOrderByMerchant",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "string"
+        }],
         "name": "checker",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "payable": false,
         "stateMutability": "view",
         "type": "function"
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_rsaKey",
-                "type": "string"
-            }
-        ],
+        "inputs": [{
+            "name": "_rsaKey",
+            "type": "string"
+        }],
         "name": "updateRsaKey",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "string"
+        }],
         "name": "gatewayInfoBase",
-        "outputs": [
-            {
+        "outputs": [{
                 "name": "status",
                 "type": "bool"
             },
@@ -972,15 +849,12 @@ var abi_c2c = [
     },
     {
         "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "name": "",
+            "type": "address"
+        }],
         "name": "merchants",
-        "outputs": [
-            {
+        "outputs": [{
                 "name": "merchantID",
                 "type": "uint256"
             },
@@ -1035,19 +909,15 @@ var abi_c2c = [
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "name": "_amount",
-                "type": "uint256"
-            }
-        ],
+        "inputs": [{
+            "name": "_amount",
+            "type": "uint256"
+        }],
         "name": "subBond",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1065,8 +935,7 @@ var abi_c2c = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "name": "merchant",
                 "type": "address"
@@ -1092,8 +961,7 @@ var abi_c2c = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "name": "user",
                 "type": "address"
@@ -1122,4 +990,4 @@ var abi_c2c = [
         "name": "AppealOrderAnswer",
         "type": "event"
     }
-]
+];

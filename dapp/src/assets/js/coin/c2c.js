@@ -1,5 +1,8 @@
+/* eslint-disable */
+import Web3 from 'web3';
+import { CONFIG } from "@/assets/js/config.js";
 //挂卖单
-async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA) {
+export async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra);
@@ -14,7 +17,7 @@ async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA
 }
 
 //取消挂单
-async function cancelOrder(orderID) {
+export async function cancelOrder(orderID) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra);
@@ -32,40 +35,40 @@ async function cancelOrder(orderID) {
 
 
 //待付款
-async function awaitPay(num, txt) {
+export async function awaitPay(num, txt) {
     let res = await Contract_c2c.methods.completeOrder(num, txt).call();
 }
 
 //申诉
-async function appealOrder(orderID, txt) {
+export async function appealOrder(orderID, txt) {
     let res = await Contract_c2c.methods.appealOrder(orderID, txt).call();
 }
 
 
 
 //关闭申诉
-async function closeAppealOrder(orderID, txt) {
+export async function closeAppealOrder(orderID, txt) {
     let res = await Contract_c2c.methods.closeAppealOrder(orderID, txt).call();
 }
 
 //查询所有订单
-async function queryAllOrder(addr, status, gateWay, Caddr, start, limit) {
+export async function queryAllOrder(addr, status, gateWay, Caddr, start, limit) {
     let res = await Contract_c2c.methods.queryAllOrder(addr, status, gateWay, Caddr, start, limit).call();
     return res;
 }
 
-async function orders(id) {
+export async function orders(id) {
     let res = await Contract_c2c.methods.orders(id).call();
     return res;
 }
 
-async function checker(gateway) {
+export async function checker(gateway) {
     let res = await Contract_c2c.methods.checker(gateway).call();
     return res;
 }
 
 //获取地址
-async function ethAccounts() {
+export async function ethAccounts() {
     return new Promise(function(resolve, reject) {
         web3.eth.getAccounts(function(err, accounts) {
             if (err) {
@@ -78,13 +81,13 @@ async function ethAccounts() {
 }
 
 //获取当前gas
-async function getGasPrice() {
+export async function getGasPrice() {
     let gas = await web3.eth.getGasPrice();
     return gas;
 }
 
 //获取UNDT余额
-async function balance_undt(addr) {
+export async function balance_undt(addr) {
     let balance_num = await Contract_undt.methods.balanceOf(addr).call();
     balance_num = web3.utils.fromWei(balance_num, CONFIG.undt_wei);
     balance_num = Number(balance_num).toFixed(8);
@@ -92,7 +95,7 @@ async function balance_undt(addr) {
 }
 
 //注册商户
-async function registerMerchant() {
+export async function registerMerchant() {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra);
@@ -106,25 +109,25 @@ async function registerMerchant() {
     })
 }
 
-async function merchantOrders(gateWay, id) {
+export async function merchantOrders(gateWay, id) {
     let res = await Contract_c2c.methods.merchantOrders(gateWay, id).call();
     return res;
 }
 
 //查找达到条件的商户
-async function rsaKeys(address) {
+export async function rsaKeys(address) {
     let rsaKeys = await Contract_c2c.methods.rsaKeys(address).call();
     return rsaKeys;
 }
 
 //网关信息
-async function gatewayInfoBase(gateWay) {
+export async function gatewayInfoBase(gateWay) {
     let info = await Contract_c2c.methods.gatewayInfoBase(gateWay).call();
     return info;
 }
 
 //申诉
-async function appealOrder_NoReceive(id) {
+export async function appealOrder_NoReceive(id) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -139,7 +142,7 @@ async function appealOrder_NoReceive(id) {
 }
 
 //申诉2
-async function appealOrder_Wrong(id) {
+export async function appealOrder_Wrong(id) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -154,7 +157,7 @@ async function appealOrder_Wrong(id) {
 }
 
 //确认订单
-async function payOrder(orderID) {
+export async function payOrder(orderID) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -169,17 +172,17 @@ async function payOrder(orderID) {
 }
 
 
-async function id_address(id) {
+export async function id_address(id) {
     let address = await Contract_c2c.methods.id_address(id).call();
     return address;
 }
 
 //查找达到条件的商户
-async function queryAllMerchantOrders(gateWay) {
+export async function queryAllMerchantOrders(gateWay) {
     var status = true;
     var start = 0;
     var online = true;
-    var level = 1
+    var level = 1;
     var price = 0;
     var goods = 0;
     var returnNum = 999999;
@@ -188,7 +191,7 @@ async function queryAllMerchantOrders(gateWay) {
 }
 
 //授权
-async function authorize_coin(Addr, num) {
+export async function authorize_coin(Addr, num) {
     let gas = await getGasPrice();
     let UserAddr = await ethAccounts();
     num = Number(num);
@@ -211,14 +214,19 @@ async function authorize_coin(Addr, num) {
     });
 }
 
+export const test = async function(aa) {
+    console.log(aa);
+    return;
+}
+
 //获取订单数和申诉数
-async function Statisticss(address) {
+export async function Statisticss(address) {
     let res = await Contract_c2c.methods.Statisticss(address).call();
     return res;
 }
 
 //获取授权数量
-async function authorize_coin_num(Addr) {
+export async function authorize_coin_num(Addr) {
     let UserAddr = await ethAccounts();
     return new Promise(function(resolve, reject) {
         Contract_undt.methods.allowance(UserAddr, Addr).call()
@@ -240,13 +248,13 @@ async function authorize_coin_num(Addr) {
 }
 
 //获取商户信息
-async function merchants(address) {
+export async function merchants(address) {
     let merchants_info = await Contract_c2c.methods.merchants(address).call();
     return merchants_info;
 }
 
 //增加保证金
-async function addBond(num) {
+export async function addBond(num) {
     let gas = await getGasPrice();
     let UserAddr = await ethAccounts();
     num = Number(num);
@@ -272,7 +280,7 @@ async function addBond(num) {
 }
 
 //减少保证金
-async function subBond(num) {
+export async function subBond(num) {
     let gas = await getGasPrice();
     let UserAddr = await ethAccounts();
     num = Number(num);
@@ -297,7 +305,7 @@ async function subBond(num) {
     });
 }
 
-async function updateRsaKey(pubKey) {
+export async function updateRsaKey(pubKey) {
     let gas = await getGasPrice();
     let UserAddr = await ethAccounts();
     gas = Number(gas) + Number(CONFIG.GasExtra);
@@ -310,7 +318,7 @@ async function updateRsaKey(pubKey) {
         })
     });
 }
-async function setMerchantOrder(gateWay, price, min, max, goods, fee) {
+export async function setMerchantOrder(gateWay, price, min, max, goods, fee) {
     let gas = await getGasPrice();
     let UserAddr = await ethAccounts();
     price = Number(price);
@@ -362,7 +370,7 @@ async function setMerchantOrder(gateWay, price, min, max, goods, fee) {
 }
 
 //商户修改在线状态
-async function setMerchantOnline(gateway, online) {
+export async function setMerchantOnline(gateway, online) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -377,7 +385,7 @@ async function setMerchantOnline(gateway, online) {
 }
 
 //商户确认订单
-async function completeOrder(orderID, msg) {
+export async function completeOrder(orderID, msg) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -392,7 +400,7 @@ async function completeOrder(orderID, msg) {
 }
 
 //锁定订单
-async function lockOrder(orderID, status) {
+export async function lockOrder(orderID, status) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -408,7 +416,7 @@ async function lockOrder(orderID, status) {
 
 
 //取消订单
-async function cancelOrderByMerchant(orderID) {
+export async function cancelOrderByMerchant(orderID) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -423,7 +431,7 @@ async function cancelOrderByMerchant(orderID) {
 }
 
 //商户退款
-async function refundOrder(orderID) {
+export async function refundOrder(orderID) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -438,7 +446,7 @@ async function refundOrder(orderID) {
 }
 
 //上传swarm
-async function upload(str) {
+export async function upload(str) {
     const client = new Erebos.swarm.SwarmClient({
         http: 'https://swarm-gateways.net',
     })
@@ -447,7 +455,7 @@ async function upload(str) {
 }
 
 //下载swarm
-async function download(str) {
+export async function download(str) {
     const client = new Erebos.swarm.SwarmClient({
         http: 'https://swarm-gateways.net',
     })
@@ -456,7 +464,7 @@ async function download(str) {
 }
 
 //申诉交流
-async function appealOrderAnswer(orderID, msg) {
+export async function appealOrderAnswer(orderID, msg) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
@@ -471,7 +479,7 @@ async function appealOrderAnswer(orderID, msg) {
 }
 
 //申诉交流
-async function updateMerchants(agent, cashier, refundClerk, receive) {
+export async function updateMerchants(agent, cashier, refundClerk, receive) {
     let account = await ethAccounts();
     let gas = await getGasPrice();
     gas = Number(gas) + Number(CONFIG.GasExtra2);
