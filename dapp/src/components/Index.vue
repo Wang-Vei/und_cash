@@ -11,7 +11,7 @@
               <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
               <i class="iconfont icon-suo" v-else></i>
               </span>
-            </li>     
+            </li>
             <li><span class="account_balance">{{balance}}</span>UNDT</li>
           </div>
           <div class="every_form">
@@ -214,24 +214,18 @@ export default {
     let init_exchange = async() => {
         try {
             //实例化web3
-            // console.log(getWeb3);
             window.web3 = await getWeb3();
             // 实例化需要用到的合约
             window.Contract_undt = await getContract(abi_undt, CONFIG['undt_addr']);
-            // console.log(window.Contract_undt);return;
             window.Contract_c2c = await getContract(abi_c2c, CONFIG['c2c_addr']);
             //调用合约方法
             let account = await ethAccounts();
-            // $("#address").val(account);
             this.address = account;
             let num = await balance_undt(account);
-            // $('#balance').text(num);
             this.balance=num;
             let authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
-
             authorize_num = Number(authorize_num);
             console.log(authorize_num);
-
             // if (authorize_num <= 100) {
                 // $('#unlock').css('display', 'block');
             // }
@@ -397,7 +391,7 @@ $g_c:#666;
             padding-top: 2px;
             box-sizing: border-box;
             position: absolute;
-            top: 30%;
+            top: 23%;
             right: 120px;
           }
         }
