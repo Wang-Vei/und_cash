@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Guide">
       <div class="guide_content">
@@ -46,6 +47,7 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 export default {
   name:'Guide',
 }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Wepay">
     <div class="content_info">
@@ -41,7 +42,7 @@
     <div class="getway_necessarily">
       <div>
          <label>网关名称</label>
-         <span>asdfsdf</span>
+         <span>{{gateway_name}}</span>
         </div>
       <div>
         <label>公钥</label>
@@ -54,6 +55,7 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { Toast } from 'vant'
 export default {
   name: 'Wepay',
@@ -65,6 +67,7 @@ export default {
       v_coin: "选择币种",
       v_account: "",
       select_info:[{value:'CHINA',coin:['CNY']}, {value:'HOKONG',coin:["HKD","USD"]}],
+      gateway_name:"",
     }
   },
   methods:{
@@ -72,6 +75,7 @@ export default {
       if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种" && this.v_bank != "选择银行"){
         console.log(this.v_area);
         console.log(this.v_coin);
+        this.gateway_name = this.v_area+"-WP-"+this.v_coin;
       }
       for(let i in this.select_info){
         if(this.v_area == this.select_info[i]['value']){

@@ -2,6 +2,9 @@
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
+import Qs from 'qs'
+import Vuex from 'vuex'
+import axios from 'axios'
 import router from './router';
 import flexible from 'lib-flexible/';
 import fastClick from 'fastclick';
@@ -17,8 +20,9 @@ import '@/assets/js/coin/common.js';
 import '@/assets/js/base.js';
 import '@/assets/js/config.js';
 import { Toast } from 'vant';
-Vue.use(Toast);
-
+Vue.use(Toast, Vuex);
+Vue.prototype.$axios = axios;
+Vue.prototype.$qs = Qs;
 
 fastClick.attach(document.body); //防止移动端300ms的点击延迟
 // Vue.config.devtools = false; //关闭dev模式

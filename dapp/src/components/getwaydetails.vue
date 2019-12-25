@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Getwaydetails">
     <div class="overly_part">

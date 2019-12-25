@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Bitpay">
     <div class="content_info">
@@ -31,7 +32,7 @@
     <div class="getway_necessarily">
       <div>
          <label>网关名称</label>
-         <span>asdfsdf</span>
+         <span>{{gateway_name}}</span>
         </div>
       <div>
         <label>公钥</label>
@@ -44,6 +45,7 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { Toast } from 'vant'
 export default {
   name: 'Bitpay',
@@ -52,12 +54,14 @@ export default {
       coin_list:['BTC','ETH','UNDT'],
       v_coin: "选择币种",
       v_account: "",
+      gateway_name:"",
     }
   },
   methods:{
     area_select(){
       if(this.v_coin != "选择币种"){
         console.log(this.v_coin);
+        this.gateway_name = "ALL-BIT-"+this.v_coin;
       }
       
       for(let i in this.select_info){

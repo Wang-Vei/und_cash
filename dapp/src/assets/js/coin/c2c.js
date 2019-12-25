@@ -214,10 +214,6 @@ export async function authorize_coin(Addr, num) {
     });
 }
 
-export const test = async function(aa) {
-    console.log(aa);
-    return;
-}
 
 //获取订单数和申诉数
 export async function Statisticss(address) {

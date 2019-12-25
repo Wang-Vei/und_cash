@@ -319,9 +319,13 @@ $i_bor:#7B7780;
     }
     .van-toast__loading {
         width: 150px;
-        height: 120px;
+        height: 110px;
     }
     .van-toast__text {
         font-size: 22px;
+    }
+    .van-loading__spinner {
+        width: 25px;
+        height: 85px;
     }
 }

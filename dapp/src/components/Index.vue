@@ -5,11 +5,12 @@
     <van-tabs swipeable>
       <van-tab title="支付网关">
         <div class="top_part">
-          <div class="clock">
+          <!-- <div class="lock_overly" v-if="balance_lock" @click.self.stop></div> -->
+          <div class="lock" id="unlock" @click="unlock()">
             <li>
-              <span class="account_label">账户余额&nbsp;&nbsp;&nbsp;
-              <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
-              <i class="iconfont icon-suo" v-else></i>
+              <span class="account_label">账户余额
+                <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
+                <i class="iconfont icon-suo" v-else></i>
               </span>
             </li>
             <li><span class="account_balance">{{balance}}</span>UNDT</li>
@@ -130,8 +131,6 @@
     <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
     <!-- 添加网关 -->
     <Getways v-show="getways" @closeGetways="getways= false"></Getways>
-    <!-- 提示框 -->
-    <van-toast id="van-toast"/>
   </div>
 </template>
 <script>
@@ -150,20 +149,19 @@ import {authorize_coin,balance_undt,ethAccounts,authorize_coin_num} from '@/asse
 import {CONFIG} from "@/assets/js/config.js"
 import Web3 from 'web3';
 
-export default {
+export default{
   name: 'index',
   data () {
     return{
       address:"",            //地址
       balance:"",            //账户余额
-      balance_lock: true,    // 账户余额的锁
+      balance_lock: false,    // 账户余额的锁
       getWay_clicked: false, // 点击选择网关变色
       v_getWay: '',
       v_money: '',
       v_postscript: '',
       v_dealer: '',
-      value:  '',
-      showPicker: false, // 控制picker隐现
+      showPicker: false,    // 控制picker隐现
       showGuide: false,     // 新手指南框
       guide_content: false, // 新手指南内容
       merchant_show: false, // 商家显示
@@ -208,9 +206,6 @@ export default {
     }
   },
   mounted(){
-    var version = Web3.version.api;
-    console.log(version);
-    console.log(CONFIG);
     let init_exchange = async() => {
         try {
             //实例化web3
@@ -221,14 +216,18 @@ export default {
             //调用合约方法
             let account = await ethAccounts();
             this.address = account;
+            //首页显示余额 保留4位小数
             let num = await balance_undt(account);
-            this.balance=num;
+            let numStr = num.toString();
+            let index = numStr.indexOf(".")
+            this.balance=numStr.slice(0,index+5)
+            //授权额度
             let authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
             authorize_num = Number(authorize_num);
             console.log(authorize_num);
-            // if (authorize_num <= 100) {
-                // $('#unlock').css('display', 'block');
-            // }
+            if (authorize_num >= 100) {
+                this.balance_lock=true;
+            }
             // orderList();
         }
         catch (e) {
@@ -236,15 +235,17 @@ export default {
         }
       };
       init_exchange();
+      this.setrsakey();
   },
   methods:{
     //立即提款
     confirm () {
-      this.$toast({
-        // duration: 0,       // 持续展示 toast
+      this.$toast.loading({
+        //duration: 0,       // 持续展示 toast
         forbidClick: true,    // 禁用背景点击
         message: '提现成功',
-        type: 'success',
+        loadingType: 'load',
+        // type: 'fail',
         selector: '#van-toast'
       });
     },
@@ -259,6 +260,49 @@ export default {
       this.v_getWay = getWay;
       this.showPicker = false
     },
+    //解锁
+    unlock(){
+      var that = this
+      const toast=this.$toast.loading({
+        duration: 0,          // 持续展示 toast
+        forbidClick: true,    // 禁用背景点击
+        mask:true,
+        message: '解锁中，请稍侯',
+        loadingType:"spinner",
+      });
+        authorize_coin(CONFIG.c2c_addr, 10000000000000).then(
+            function(v) {
+              console.log(v);
+                //成功
+                toast.message ="解锁成功"
+                toast.type = 'success'
+                that.balance_lock = true;
+                setInterval(() => {
+                  toast.clear();
+                }, 1000)
+            },
+            function(e) {
+              console.log(e);
+              consol.log('解锁失败')
+                toast.message ="解锁失败"
+                toast.type = 'fail'
+                setInterval(() => {
+                  toast.clear();
+                }, 1000)
+            }
+        )
+    },
+    //设置公钥私钥
+    setrsakey() {
+      var pubKey = localStorage.getItem(String('pubKey'));
+      if (!pubKey) {
+        this.$axios.get("https://query.uniondao.com/queue/new_rsa_key").then((e)=>{
+          console.log(e.data.pubKey);
+          localStorage.setItem('pubKey', e.data.pubKey);
+          localStorage.setItem('privKey', e.data.privKey);
+        })           
+      }
+    }
   }
 }
 </script>
@@ -301,11 +345,21 @@ $g_c:#666;
     margin: 0 auto 15px;
     min-height: 688px;
     height: 56vh;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    .lock_overly{
+      width: 100%;
+      height: 150px;
+      position: absolute;
+      border-radius: 12px;
+      margin: 0 auto;
+      float: left;
+      top: 2%;
+    }
     //账户余额
-    .clock{
+    .lock{
       width: 100%;
       height: 120px;
       border-radius: 12px;
@@ -318,6 +372,7 @@ $g_c:#666;
       display: flex;
       justify-content: space-around;
       padding: 30px;
+      padding-left: 15px;
       li{
         align-items: flex-end;
         color: #000;
@@ -332,8 +387,14 @@ $g_c:#666;
           }
         }
         .account_label{
+          width: 140px;
+          font-size: 24px;
+          // line-height: 50px;
           display: inline-block;
-          padding-top: 20px;
+          padding-top: 18px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
         }
         .account_balance{
           font-size: 60px;

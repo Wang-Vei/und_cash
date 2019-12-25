@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 <template>
   <div id="Getways">
     <div class="overly_part">
@@ -29,6 +29,7 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { Tab, Tabs, Picker, Field, Popup, Overlay, Toast } from 'vant'
 import Bankpay from './settingGetway/bankpay';
 import Paypal from './settingGetway/paypal';

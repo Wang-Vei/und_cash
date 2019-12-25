@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Orderdetails">
     <div class="overly_part">

@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div id="Bankpay">
     <div class="content_info">
@@ -53,7 +54,7 @@
     <div class="getway_necessarily">
       <div>
          <label>网关名称</label>
-         <span>asdfsdf</span>
+         <span>{{gateway_name}}</span>
         </div>
       <div>
         <label>公钥</label>
@@ -66,6 +67,7 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { Toast } from 'vant'
 export default {
   name: 'Bankpay',
@@ -80,7 +82,7 @@ export default {
       v_code: "",
       v_username: "",
       v_account: "",
-
+      gateway_name:"",
       select_info:[
         {value:'CHINA',
           coin:['CNY'],
@@ -126,6 +128,7 @@ export default {
         console.log(this.v_area);
         console.log(this.v_coin);
         console.log(this.v_bank);
+        this.gateway_name = this.v_area+"-LB-"+this.v_coin;
       }
       
       for(let i in this.select_info){
