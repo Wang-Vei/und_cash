@@ -6,7 +6,7 @@
         <label>币种</label>
         <div class="right_option">
           <select class="i_input" v-model="v_coin" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected>选择币种</option>
+            <option style="color:#000;background-color:#ccc" disabled="disabled" selected="selected">选择币种</option>
             <option v-for="item in coin_list" v-bind:value="item" style="color:#000;">{{item}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>

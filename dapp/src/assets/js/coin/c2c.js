@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Web3 from 'web3';
 import { CONFIG } from "@/assets/js/config.js";
+import { SwarmClient } from '@erebos/swarm';
 //挂卖单
 export async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA) {
     let account = await ethAccounts();
@@ -443,10 +444,16 @@ export async function refundOrder(orderID) {
 
 //上传swarm
 export async function upload(str) {
-    const client = new Erebos.swarm.SwarmClient({
+    // const swarm = require("swarm-js").at("http://swarm-gateways.net");
+    const client = new SwarmClient({
         http: 'https://swarm-gateways.net',
     })
-    info = client.bzz.upload(str, { contentType: 'text/plain' }).then();
+    let info = client.bzz.upload(str, { contentType: 'text/plain' }).then();
+    // const swarm = require("swarm-js").at("https://swarm-gateways.net");
+    // let info = swarm.upload(str, { contentType: 'text/plain' }).then(hash => {
+    //         console.log("Uploaded file. Address:", hash);
+    //     })
+        //
     return info;
 }
 

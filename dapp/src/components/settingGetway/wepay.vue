@@ -5,8 +5,8 @@
       <div>
         <label>国家/地区</label>
         <div class="right_option">
-          <select class="i_input" v-model="v_area" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected='selected'>选择国家/地区</option>
+          <select class="i_input" v-model="v_area" style="color:#ccc" @change="area_select('area')">
+            <option style="color:#000;background-color:#ccc;display:none" disabled="disabled" selected>选择国家/地区</option>
             <option v-for="item in area_list" v-bind:value="item.value" style="color:#000;">{{item.name}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>
@@ -16,7 +16,7 @@
         <label>币种</label>
         <div class="right_option">
           <select class="i_input" v-model="v_coin" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected>选择币种</option>
+            <option style="color:#000;background-color:#ccc;display:none;" disabled="disabled">选择币种</option>
             <option v-for="item in coin_list" v-bind:value="item" style="color:#000;">{{item}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>
@@ -46,7 +46,9 @@
         </div>
       <div>
         <label>公钥</label>
-        <span style="color: #8BF692">生成并上传</span>
+        <span style="color: #8BF692" v-if="$store.state.upkeys">已上传</span>
+        <span style="color: #8BF692" @click="upkeys()" v-else>生成并上传</span>
+        
       </div>
       <div class="button_area">
         <button>保存</button>
@@ -70,18 +72,30 @@ export default {
       gateway_name:"",
     }
   },
+  mounted(){
+      
+  },
   methods:{
-    area_select(){
-      if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种" && this.v_bank != "选择银行"){
-        console.log(this.v_area);
-        console.log(this.v_coin);
-        this.gateway_name = this.v_area+"-WP-"+this.v_coin;
-      }
-      for(let i in this.select_info){
-        if(this.v_area == this.select_info[i]['value']){
-          this.coin_list=this.select_info[i]['coin']
+    area_select(v){
+      if(v == "area"){
+        this.gateway_name = "";
+        this.v_coin = "选择币种"; 
+        for(let i in this.select_info){ 
+          //币种根据国家/地区而显示
+          if(this.v_area == this.select_info[i]['value']){
+            this.coin_list=this.select_info[i]['coin']
+          }
+      }   
+      }else{
+        if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种"){
+          this.gateway_name = this.v_area+"-WP-"+this.v_coin;
+        }else{
+          this.gateway_name = "";
         }
       }
+    },
+    upkeys(){
+      this.$store.dispatch("asyncUpkeys")
     }
   },
 }
