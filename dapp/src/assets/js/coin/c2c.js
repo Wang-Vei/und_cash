@@ -453,13 +453,13 @@ export async function upload(str) {
     // let info = swarm.upload(str, { contentType: 'text/plain' }).then(hash => {
     //         console.log("Uploaded file. Address:", hash);
     //     })
-        //
+    //
     return info;
 }
 
 //下载swarm
 export async function download(str) {
-    const client = new Erebos.swarm.SwarmClient({
+    const client = new SwarmClient({
         http: 'https://swarm-gateways.net',
     })
     info = client.bzz.download(str).then(res => res.text());

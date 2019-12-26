@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { upload } from '@/assets/js/coin/c2c.js';
+import { upload, updateRsaKey } from '@/assets/js/coin/c2c.js';
 
 Vue.use(Vuex);
 
@@ -15,10 +15,6 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        // async asyncUpkeys(ctx) {
-        //     ctx.commit("asyncUpkeys");
-        //     console.log("action")
-        // },
         async asyncUpkeys(ctx) {
             var pubKey = localStorage.getItem(String('pubKey'));
             console.log(pubKey);
@@ -32,31 +28,39 @@ export default new Vuex.Store({
                     // selector: '#van-toast'
                 });
                 return;
+            } else {
+                const toast = this.$toast.loading({
+                    duration: 0, // 持续展示 toast
+                    forbidClick: true, // 禁用背景点击
+                    mask: true,
+                    message: '上传中',
+                    loadingType: "spinner",
+                });
+                let hash = await upload(pubKey);
+                console.log(hash);
+                updateRsaKey(hash).then(
+                    function(v) {
+                        console.log(v);
+                        toast.message = "上传成功"
+                        toast.type = 'success'
+                        ctx.commit("asyncUpkeys");
+                        setInterval(() => {
+                            toast.clear();
+                        }, 1000)
+                    },
+                    function(e) {
+                        console.log(e);
+                        toast.message = "上传失败"
+                        toast.type = 'fail'
+                        setInterval(() => {
+                                toast.clear();
+                            }, 1000)
+                            // layer.msg("上传失败");
+                            // $(".upkeys").text("存储公钥");
+                        return false;
+                    }
+                );
             }
-            let hash = await upload(pubKey);
-
-            console.log(hash);
-
-            // $(".upkeys").text("提交中，请等待...");
-            updateRsaKey(hash).then(
-                function(v) {
-                  console.log(v);
-                    // layer.msg("上传成功");
-                    // $('#reskey').val(1);
-                    // $('.upkeys').css('display', 'none');
-                    // $('.havekeys').css('display', 'block');
-                    // $('#keysremark').css('display', 'none');
-                    //     Verification(v,1);
-                    ctx.commit("asyncUpkeys");
-                },
-                function(e) {
-                    console.log(e);
-                    // layer.msg("上传失败");
-                    // $(".upkeys").text("存储公钥");
-                    return false;
-                }
-            );
-
         }
     }
 })
