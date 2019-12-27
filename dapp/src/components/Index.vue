@@ -22,15 +22,15 @@
             </li>
             <div class="form_right_part" v-clickoutside="handleClean_getWay">
               <div class="select_getWay">
-                <input readonly :class="`i_input ${getWay_clicked?'getWay_clicked':''}`" placeholder="选择网关" v-model="v_getWay" @click="handleChoise_getWay">
+                <input readonly :class="`i_input ${gateWay_click?'gateWay_click':''}`" placeholder="选择网关" v-model="v_gateWay" @click="handleChoise_getWay">
                 <span class="getWay_icon_xia" @click="handleChoise_getWay"><i class="iconfont icon-xia-copy"></i></span>
-                <button class="getWay_details" @click="handleGetway_detail" v-show="v_getWay">详情</button>
-                <span @click="getways= true">添加</span><br>
+                <button class="getWay_details" @click="handleGetway_detail" v-show="v_gateWay">详情</button>
+                <span @click="gateWay= true">添加</span><br>
               </div>
               <van-popup v-model="showPicker" position="bottom">
                 <van-picker
                   show-toolbar
-                  :columns="getway_list"
+                  :columns="gateWay_list"
                   @cancel="showPicker = false"
                   @confirm="handleOnConfirm"
                 />
@@ -118,7 +118,7 @@
       </div>
     </van-overlay>
      <!-- 网关详情 -->
-    <van-overlay :show="getway_detail" @click="getway_detail = false">
+    <van-overlay :show="gateway_detail" @click="gateway_detail = false">
       <Getwaydetails ref="Getwaydetails"></Getwaydetails>
     </van-overlay>
     <!-- 新手指南 -->
@@ -130,7 +130,7 @@
     <!-- 订单详情 -->
     <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
     <!-- 添加网关 -->
-    <Getways v-show="getways" @closeGetways="getways= false"></Getways>
+    <Gateways v-show="gateWay" @closeGateways="gateWay= false"></Gateways>
   </div>
 </template>
 <script>
@@ -140,7 +140,7 @@ import Guide from './guide'
 import Merchant from './merchant'
 import Orderdetails from './orderdetails'
 import Getwaydetails from './getwaydetails'
-import Getways from './getways'
+import Gateways from './gateways'
 
 import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
@@ -156,8 +156,8 @@ export default{
       address:"",            //地址
       balance:"",            //账户余额
       balance_lock: false,    // 账户余额的锁
-      getWay_clicked: false, // 点击选择网关变色
-      v_getWay: '',
+      gateWay_click: false, // 点击选择网关变色
+      v_gateWay: '',
       v_money: '',
       v_postscript: '',
       v_dealer: '',
@@ -166,9 +166,9 @@ export default{
       guide_content: false, // 新手指南内容
       merchant_show: false, // 商家显示
       record_detail: false, // 订单详情
-      getway_detail: false, // 网关详情
-      getways: false,       // 添加网关
-      getway_list: [],
+      gateway_detail: false, // 网关详情
+      gateWay: false,       // 添加网关
+      gateWay_list: [],
     }
   },
   components:{
@@ -182,7 +182,7 @@ export default{
     Merchant,
     Orderdetails,
     Getwaydetails,
-    Getways,
+    Gateways,
   },
    //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
   directives: {
@@ -268,40 +268,52 @@ export default{
 
     //点击其他地方 选择网关框 变回本色
     handleClean_getWay () {
-      this.getWay_clicked = false
+      this.gateWay_click = false
     },
 
     //选择网关
     handleChoise_getWay () {
       this.showPicker = true;     //选择器弹出
-      this.getWay_clicked= true   //边框变色
+      this.gateWay_click= true    //边框变色
+      this.gateWay_list = [];
       var that = this
       var gateWay_All = jsonGetLocalAll('gateWay');
       if (undefined !== gateWay_All) {
         gateWay_All.forEach(function(value) {
-          that.getway_list.push(value.gateWay);
+          that.gateWay_list.push(value.gateWay);
         });
       }
     },
 
     //选择器的 确定
     handleOnConfirm (getWay) {
-      this.v_getWay = getWay;
+      this.v_gateWay = getWay;
       this.showPicker = false
     },
 
     //网关详情  到子组件中
     handleGetway_detail () {
-      this.getway_detail = true
-      this.$refs.Getwaydetails.handleGetway_detail(this.v_getWay);
+      this.gateway_detail = true
+      this.$refs.Getwaydetails.handleGetway_detail(this.v_gateWay);
 
     },
 
 
     //查看商家
     handleMerchant_show(){
-      this.merchant_show = true
+      if(!this.v_gateWay){
+          this.$toast.loading({
+          //duration: 0,          // 持续展示 toast
+          forbidClick: true,    // 禁用背景点击
+          mask:true,
+          message: '请选择网关',
+          type:'fail',
+        });
+      }else{
+       this.merchant_show = true
+      }
     },
+
     //立即提款
     handleConfirm () {
       this.$toast.loading({
@@ -445,7 +457,7 @@ $g_c:#666;
         z-index: 11;
         @include input_common;
       }
-      .i_input:focus,.getWay_clicked{
+      .i_input:focus,.gateWay_click{
         border-color:$tc;
         box-shadow: inset $font_c 0px 0px 15px;
         -moz-box-shadow: inset $font_c 0px 0px 15px;

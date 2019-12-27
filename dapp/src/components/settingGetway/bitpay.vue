@@ -106,34 +106,36 @@ export default {
       var gateWay_All = jsonGetLocalAll();
       var that = this
       if (undefined !== gateWay_All) {
-          gateWay_All.forEach(function (value,index) {
-            if (value.gateWay == that.gateway_name) {
-                gateWay_All.splice(index, 1);
-                return false;
-            }
-          })
-          var obj = {};
-          obj.gateWay = this.gateway_name;
-          obj.coin = this.v_coin;
-          obj.address = this.v_account;
-          gateWay_All.push(obj);
-          localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
-      } else {
-          var newobj = [];
-          var obj = {};
-          obj.gateWay = this.gateway_name;
-          obj.coin = this.v_coin;
-          obj.address = this.v_account;
-          newobj.push(obj);
-          localStorage.setItem("gateWay", JSON.stringify(newobj));
-      }
-      that.$toast({
+        gateWay_All.forEach(function (value,index) {
+          if (value.gateWay == that.gateway_name) {
+              gateWay_All.splice(index, 1);
+              return false;
+          }
+        })
+        var obj = {};
+        obj.gateWay = this.gateway_name;
+        obj.coin = this.v_coin;
+        obj.address = this.v_account;
+        gateWay_All.push(obj);
+        localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
+    } else {
+        var newobj = [];
+        var obj = {};
+        obj.gateWay = this.gateway_name;
+        obj.coin = this.v_coin;
+        obj.address = this.v_account;
+        newobj.push(obj);
+        localStorage.setItem("gateWay", JSON.stringify(newobj));
+    }
+    this.$toast.loading({
         forbidClick: true,
         mask:true,
         message: '添加成功',
         type: 'success',
       });
-      setTimeout(location.reload() , 1000)  //添加成功 刷新页面
+      setTimeout(function () {
+        location.reload()
+      },1000)                         //添加成功 刷新页面
     },
   },
 }

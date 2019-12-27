@@ -1,6 +1,6 @@
 /* eslint-disable */
 <template>
-  <div id="Getways">
+  <div id="Gateways">
     <div class="overly_part">
       <div class="overly_title">
         <i class="iconfont icon-guanbi-cu" @click="handleClose"></i>
@@ -42,7 +42,7 @@ import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
 import {upload, updateRsaKey, authorize_coin,balance_undt,ethAccounts,authorize_coin_num,rsaKeys} from '@/assets/js/coin/c2c.js';
 
 export default {
-  name: 'Getways',
+  name: 'Gateways',
   components: {
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     handleClose(){
-      this.$emit('closeGetways');
+      this.$emit('closeGateways');
     },
     async handleUpkeys(){
       var that = this;
@@ -139,7 +139,7 @@ img{
   width: 100%;
   height: 100%;
   }
-#Getways{
+#Gateways{
   width: 100%;
   height: 100%;
   background-color: rgba($color: #000000, $alpha: .7);

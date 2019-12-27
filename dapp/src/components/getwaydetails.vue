@@ -9,21 +9,7 @@
         <li v-for="item in info_list">
           <span>{{item.label}}</span>
           <span>{{item.val}}</span>
-          <!--<span>交易时间</span>-->
-          <!--<span>2019-01-11</span>-->
         </li>
-        <!--<li>-->
-          <!--<span>付款人</span>-->
-          <!--<span>大老虎</span>-->
-        <!--</li>-->
-        <!--<li>-->
-          <!--<span>付款账号</span>-->
-          <!--<span>366655555555555</span>-->
-        <!--</li>-->
-        <!--<li>-->
-          <!--<span>账户余额</span>-->
-          <!--<span>25118.21</span>-->
-        <!--</li>-->
       </div>
     </div>
   </div>

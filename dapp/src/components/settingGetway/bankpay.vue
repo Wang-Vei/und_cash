@@ -69,7 +69,7 @@ export default {
   name: 'Bankpay',
   data () {
     return {
-      area_list:[{value:'CHINA',name:"中国大陆"}, {value:'HOKONG',name:"中国香港"}],
+      area_list:[{value:'CHINA',name:"中国大陆"}, {value:'HONGKONG',name:"中国香港"}],
       coin_list:"",
       bank_list:"",
       v_area: "选择国家/地区",
@@ -98,7 +98,7 @@ export default {
           {value:"SZPAB",name:"平安银行"}
           ]
         },
-        {value:'HOKONG',
+        {value:'HONGKONG',
         coin:["HKD","USD"],
         bank:[
           {value:"CMB",name:"招商銀行香港分行"},
@@ -195,42 +195,43 @@ export default {
       var gateWay_All = jsonGetLocalAll();
       var that = this
       if (undefined !== gateWay_All) {
-            gateWay_All.forEach(function (value,index) {
-              if (value.gateWay == that.gateway_name) {
-                  gateWay_All.splice(index, 1);
-                  return false;
-              }
-            })
-            var obj = {};
-            obj.gateWay = this.gateway_name;
-            obj.country = this.v_area;
-            obj.coin = this.v_coin;
-            obj.bank = this.v_bank;
-            obj.username = this.v_username;
-            obj.account = this.v_account;
-            gateWay_All.push(obj);
-            localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
-        } else {
-            var newobj = [];
-            var obj = {};
-            obj.gateWay = this.gateway_name;
-            obj.country = this.v_area;
-            obj.coin = this.v_coin;
-            obj.bank = this.v_bank;
-            obj.username = this.v_username;
-            obj.account = this.v_account;
-            newobj.push(obj);
-            localStorage.setItem("gateWay", JSON.stringify(newobj));
-        }
-        that.$toast({
-          forbidClick: true,
-          mask:true,
-          message: '添加成功',
-          type: 'success',
-        });
-        setTimeout(location.reload() , 1000)  //添加成功 刷新页面
+          gateWay_All.forEach(function (value,index) {
+            if (value.gateWay == that.gateway_name) {
+                gateWay_All.splice(index, 1);
+                return false;
+            }
+          })
+          var obj = {};
+          obj.gateWay = this.gateway_name;
+          obj.country = this.v_area;
+          obj.coin = this.v_coin;
+          obj.bank = this.v_bank;
+          obj.username = this.v_username;
+          obj.account = this.v_account;
+          gateWay_All.push(obj);
+          localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
+      } else {
+          var newobj = [];
+          var obj = {};
+          obj.gateWay = this.gateway_name;
+          obj.country = this.v_area;
+          obj.coin = this.v_coin;
+          obj.bank = this.v_bank;
+          obj.username = this.v_username;
+          obj.account = this.v_account;
+          newobj.push(obj);
+          localStorage.setItem("gateWay", JSON.stringify(newobj));
+      }
+      this.$toast.loading({
+        forbidClick: true,
+        mask:true,
+        message: '添加成功',
+        type: 'success',
+      });
+      setTimeout(function () {
+        location.reload()
+      },1000)                         //添加成功 刷新页面
     },
-
   },
 }
 
