@@ -2,6 +2,15 @@
 import Web3 from 'web3';
 import { CONFIG } from "@/assets/js/config.js";
 import { SwarmClient } from '@erebos/swarm';
+//local storage 的getaWay 字符串对象转换
+export function jsonGetLocalAll() {
+      var local = localStorage.getItem("gateWay");
+      if (local === null) {
+          return undefined;
+      }
+      var objLocal = JSON.parse(local);
+      return objLocal;
+    }
 //挂卖单
 export async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA) {
     let account = await ethAccounts();
@@ -13,8 +22,10 @@ export async function sellOrder(merchantID, gateWay, price, fee, cashAmount, ord
                 return reject(error);
             }
             return resolve(transactionHash);
-        })
-    })
+        }).on('error', function(error){
+            return reject(error);
+        });
+    });
 }
 
 //取消挂单
@@ -28,7 +39,9 @@ export async function cancelOrder(orderID) {
                 return reject(error);
             }
             return resolve(transactionHash);
-        })
+        }).on('error', function(error){
+            return reject(error);
+        });
     });
 }
 
@@ -106,6 +119,8 @@ export async function registerMerchant() {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -138,6 +153,8 @@ export async function appealOrder_NoReceive(id) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -153,6 +170,8 @@ export async function appealOrder_Wrong(id) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -168,6 +187,8 @@ export async function payOrder(orderID) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -211,6 +232,8 @@ export async function authorize_coin(Addr, num) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     });
 }
@@ -272,6 +295,8 @@ export async function addBond(num) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     });
 }
@@ -298,6 +323,8 @@ export async function subBond(num) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     });
 }
@@ -312,6 +339,8 @@ export async function updateRsaKey(pubKey) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     });
 }
@@ -362,6 +391,8 @@ export async function setMerchantOrder(gateWay, price, min, max, goods, fee) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     });
 }
@@ -377,6 +408,8 @@ export async function setMerchantOnline(gateway, online) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -392,6 +425,8 @@ export async function completeOrder(orderID, msg) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -407,6 +442,8 @@ export async function lockOrder(orderID, status) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -423,6 +460,8 @@ export async function cancelOrderByMerchant(orderID) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -438,6 +477,8 @@ export async function refundOrder(orderID) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -477,6 +518,8 @@ export async function appealOrderAnswer(orderID, msg) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }
@@ -492,6 +535,8 @@ export async function updateMerchants(agent, cashier, refundClerk, receive) {
                 return reject(error);
             }
             return resolve(transactionHash);
+        }).on('error', function(error){
+            return reject(error);
         })
     })
 }

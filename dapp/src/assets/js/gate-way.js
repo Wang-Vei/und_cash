@@ -47,7 +47,7 @@ var Coin = {
     // ],
 }
 
-var Bank = {
+export const Bank = {
     "CHINA":{
         "BOC":"农业银行",
         "BCCB":"北京银行",

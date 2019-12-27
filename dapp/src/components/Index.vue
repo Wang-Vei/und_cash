@@ -5,8 +5,8 @@
     <van-tabs swipeable>
       <van-tab title="支付网关">
         <div class="top_part">
-          <!-- <div class="lock_overly" v-if="balance_lock" @click.self.stop></div> -->
-          <div class="lock" id="unlock" @click="unlock()">
+           <div class="lock_overly" v-if="balance_lock" @click.self.stop></div>
+          <div class="lock" id="unlock" @click="handleUnlock()">
             <li>
               <span class="account_label">账户余额
                 <i class="iconfont icon-jiesuo" v-if="balance_lock"></i>
@@ -22,9 +22,9 @@
             </li>
             <div class="form_right_part" v-clickoutside="handleClean_getWay">
               <div class="select_getWay">
-                <input readonly :class="`i_input ${getWay_clicked?'getWay_clicked':''}`" placeholder="选择网关" v-model="v_getWay" @click="handleChoise_getWay" >
+                <input readonly :class="`i_input ${getWay_clicked?'getWay_clicked':''}`" placeholder="选择网关" v-model="v_getWay" @click="handleChoise_getWay">
                 <span class="getWay_icon_xia" @click="handleChoise_getWay"><i class="iconfont icon-xia-copy"></i></span>
-                <button class="getWay_details" @click="getway_detail = true">详情</button>
+                <button class="getWay_details" @click="handleGetway_detail" v-show="v_getWay">详情</button>
                 <span @click="getways= true">添加</span><br>
               </div>
               <van-popup v-model="showPicker" position="bottom">
@@ -32,7 +32,7 @@
                   show-toolbar
                   :columns="getway_list"
                   @cancel="showPicker = false"
-                  @confirm="onConfirm"
+                  @confirm="handleOnConfirm"
                 />
               </van-popup>
               <span class="form_tip">参考汇率：1 UNDT = 0保证金：1%</span>
@@ -65,7 +65,7 @@
             </li>
             <div class="form_right_part">
               <input type="text" class="i_input" id="dealer" v-model="v_dealer" placeholder="系统推荐">
-              <span @click="merchant_show = true">查看</span><br>
+              <span @click="handleMerchant_show">查看</span><br>
             </div>
           </div>
           <div class="top_entrance">
@@ -73,7 +73,7 @@
             <span>交易商入口</span>
           </div>
         </div>
-        <button @click="confirm">
+        <button @click="handleConfirm">
           立即提款
         </button>
       </van-tab>
@@ -119,7 +119,7 @@
     </van-overlay>
      <!-- 网关详情 -->
     <van-overlay :show="getway_detail" @click="getway_detail = false">
-      <Getwaydetails></Getwaydetails>
+      <Getwaydetails ref="Getwaydetails"></Getwaydetails>
     </van-overlay>
     <!-- 新手指南 -->
     <transition name="fade">
@@ -145,8 +145,8 @@ import Getways from './getways'
 import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
 import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
-import {authorize_coin,balance_undt,ethAccounts,authorize_coin_num} from '@/assets/js/coin/c2c.js';
-import {CONFIG} from "@/assets/js/config.js"
+import {authorize_coin,balance_undt,ethAccounts,authorize_coin_num,jsonGetLocalAll} from '@/assets/js/coin/c2c.js';
+import {CONFIG} from "@/assets/js/config.js";
 import Web3 from 'web3';
 
 export default{
@@ -168,7 +168,7 @@ export default{
       record_detail: false, // 订单详情
       getway_detail: false, // 网关详情
       getways: false,       // 添加网关
-      getway_list: ['CHINA-LB-CNY', 'HONGKONG-LB-HKD', 'HONGKONG-WP-HKD'],
+      getway_list: [],
     }
   },
   components:{
@@ -185,7 +185,7 @@ export default{
     Getways,
   },
    //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
-  directives: { 
+  directives: {
     clickoutside: {
       bind:function (el,binding,vnode) {
           function documentHandler (e) {
@@ -238,30 +238,8 @@ export default{
       this.setrsakey();
   },
   methods:{
-    //立即提款
-    confirm () {
-      this.$toast.loading({
-        //duration: 0,       // 持续展示 toast
-        forbidClick: true,    // 禁用背景点击
-        message: '提现成功',
-        loadingType: 'load',
-        // type: 'fail',
-        selector: '#van-toast'
-      });
-    },
-    handleClean_getWay () {
-      this.getWay_clicked = false
-    },
-    handleChoise_getWay () {
-      this.showPicker = true;
-      this.getWay_clicked= true
-    },
-    onConfirm (getWay) {
-      this.v_getWay = getWay;
-      this.showPicker = false
-    },
     //解锁
-    unlock(){
+    handleUnlock(){
       var that = this
       const toast=this.$toast.loading({
         duration: 0,          // 持续展示 toast
@@ -277,30 +255,71 @@ export default{
                 toast.message ="解锁成功"
                 toast.type = 'success'
                 that.balance_lock = true;
-                setInterval(() => {
-                  toast.clear();
-                }, 1000)
+                setTimeout(toast.clear(),1000);
             },
             function(e) {
-              console.log(e);
-              consol.log('解锁失败')
-                toast.message ="解锁失败"
-                toast.type = 'fail'
-                setInterval(() => {
-                  toast.clear();
-                }, 1000)
+              console.log('解锁失败')
+              toast.message ="解锁失败"
+              toast.type = 'fail'
+              setTimeout(toast.clear(),2000);
             }
         )
+    },
+
+    //点击其他地方 选择网关框 变回本色
+    handleClean_getWay () {
+      this.getWay_clicked = false
+    },
+
+    //选择网关
+    handleChoise_getWay () {
+      this.showPicker = true;     //选择器弹出
+      this.getWay_clicked= true   //边框变色
+      var that = this
+      var gateWay_All = jsonGetLocalAll('gateWay');
+      if (undefined !== gateWay_All) {
+        gateWay_All.forEach(function(value) {
+          that.getway_list.push(value.gateWay);
+        });
+      }
+    },
+
+    //选择器的 确定
+    handleOnConfirm (getWay) {
+      this.v_getWay = getWay;
+      this.showPicker = false
+    },
+
+    //网关详情  到子组件中
+    handleGetway_detail () {
+      this.getway_detail = true
+      this.$refs.Getwaydetails.handleGetway_detail(this.v_getWay);
+
+    },
+
+
+    //查看商家
+    handleMerchant_show(){
+      this.merchant_show = true
+    },
+    //立即提款
+    handleConfirm () {
+      this.$toast.loading({
+        forbidClick: true,    // 禁用背景点击
+        message: '提现成功',
+        loadingType: 'load',
+        // type: 'fail',
+        selector: '#van-toast'
+      });
     },
     //设置公钥私钥
     setrsakey() {
       var pubKey = localStorage.getItem(String('pubKey'));
       if (!pubKey) {
         this.$axios.get("https://query.uniondao.com/queue/new_rsa_key").then((e)=>{
-          console.log(e.data.pubKey);
           localStorage.setItem('pubKey', e.data.pubKey);
           localStorage.setItem('privKey', e.data.privKey);
-        })           
+        })
       }
     }
   }

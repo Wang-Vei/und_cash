@@ -5,8 +5,8 @@
       <div>
         <label>国家/地区</label>
         <div class="right_option">
-          <select class="i_input" v-model="v_area" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected='selected'>选择国家/地区</option>
+          <select class="i_input" v-model="v_area" style="color:#ccc" @change="area_select('area')">
+            <option style="color:#000;background-color:#ccc;display: none;" disabled="disabled" selected='selected'>选择国家/地区</option>
             <option v-for="item in area_list" v-bind:value="item.value" style="color:#000;">{{item.name}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>
@@ -15,8 +15,8 @@
       <div>
         <label>币种</label>
         <div class="right_option">
-          <select class="i_input" v-model="v_coin" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected>选择币种</option>
+          <select class="i_input" v-model="v_coin" style="color:#ccc" @change="area_select('coin')">
+            <option style="color:#000;background-color:#ccc;display: none;" disabled="disabled" selected>选择币种</option>
             <option v-for="item in coin_list" v-bind:value="item" style="color:#000;">{{item}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>
@@ -26,16 +26,10 @@
         <label>银行名称</label>
         <div class="right_option">
           <select class="i_input" v-model="v_bank" style="color:#ccc" @change="area_select">
-            <option style="color:#000;background-color:#ccc" disabled="disabled" selected>选择银行</option>
+            <option style="color:#000;background-color:#ccc;display: none;" disabled="disabled" selected>选择银行</option>
             <option v-for="item in bank_list" v-bind:value="item.value" style="color:#000;">{{item.name}}</option>
           </select>
           <span class="getWay_icon_xia"><i class="iconfont icon-xia-copy"></i></span>
-        </div>
-      </div>
-      <div>
-        <label>SEIFT CODE</label>
-        <div class="right_option">
-          <input type="text" class="i_input" placeholder="输入银行CODE" v-model="v_code">
         </div>
       </div>
       <div>
@@ -58,17 +52,19 @@
         </div>
       <div>
         <label>公钥</label>
-        <span style="color: #8BF692">生成并上传</span>
+        <span style="color: #8BF692" v-if="$store.state.upkeys">已上传</span>
+        <span style="color: #8BF692" @click="upkeys()" v-else>生成并上传</span>
+
       </div>
       <div class="button_area">
-        <button>保存</button>
+        <button @click="save">保存</button>
       </div>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable */
-import { Toast } from 'vant'
+import {jsonGetLocalAll} from '@/assets/js/coin/c2c.js';
 export default {
   name: 'Bankpay',
   data () {
@@ -79,7 +75,6 @@ export default {
       v_area: "选择国家/地区",
       v_coin: "选择币种",
       v_bank: "选择银行",
-      v_code: "",
       v_username: "",
       v_account: "",
       gateway_name:"",
@@ -102,7 +97,7 @@ export default {
           {value:"SPDB",name:"浦发银行"},
           {value:"SZPAB",name:"平安银行"}
           ]
-        }, 
+        },
         {value:'HOKONG',
         coin:["HKD","USD"],
         bank:[
@@ -118,44 +113,140 @@ export default {
           {value:"BOCL",name:"中國銀行香港分行"},
           {value:"WHBL",name:"永亨銀行"},
         ]
-        }, 
+        },
       ],
     }
   },
   methods:{
-    area_select(){
-      if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种" && this.v_bank != "选择银行"){
-        console.log(this.v_area);
-        console.log(this.v_coin);
-        console.log(this.v_bank);
+    area_select(v){
+      if(v == 'area'){
+          this.v_coin = "选择币种";
+          this.v_bank = "选择银行";
+          this.gateway_name = "";
+          for(let i in this.select_info){
+            if(this.v_area == this.select_info[i]['value']){
+              this.coin_list=this.select_info[i]['coin']
+              this.bank_list=this.select_info[i]['bank']
+            }
+          }
+        }
+      if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种"){
         this.gateway_name = this.v_area+"-LB-"+this.v_coin;
       }
-      
-      for(let i in this.select_info){
-        // console.log(this.coin_list[i]['parentid'])
-        if(this.v_area == this.select_info[i]['value']){
-          this.coin_list=this.select_info[i]['coin']
-          this.bank_list=this.select_info[i]['bank']
-        }
+    },
+    upkeys(){
+      this.$emit("upkeys")
+    },
+    save(){
+      if(!this.v_area || this.v_area == "选择国家/地区"){
+        this.$toast({
+          forbidClick: true,    // 禁用背景点击
+          mask:true,
+          message: '请选择地区',
+          type: 'fail',
+        });
+        return;
       }
-    }
+      if(!this.v_coin || this.v_coin == "选择币种"){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '请选择币种',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.v_bank || this.v_bank == "选择银行"){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '请选择银行',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.v_username){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '收款方户名缺失',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.v_account){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '收款方账号缺失',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.gateway_name){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '未找到网关',
+          type: 'fail',
+        });
+        return;
+      }
+      var gateWay_All = jsonGetLocalAll();
+      var that = this
+      if (undefined !== gateWay_All) {
+            gateWay_All.forEach(function (value,index) {
+              if (value.gateWay == that.gateway_name) {
+                  gateWay_All.splice(index, 1);
+                  return false;
+              }
+            })
+            var obj = {};
+            obj.gateWay = this.gateway_name;
+            obj.country = this.v_area;
+            obj.coin = this.v_coin;
+            obj.bank = this.v_bank;
+            obj.username = this.v_username;
+            obj.account = this.v_account;
+            gateWay_All.push(obj);
+            localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
+        } else {
+            var newobj = [];
+            var obj = {};
+            obj.gateWay = this.gateway_name;
+            obj.country = this.v_area;
+            obj.coin = this.v_coin;
+            obj.bank = this.v_bank;
+            obj.username = this.v_username;
+            obj.account = this.v_account;
+            newobj.push(obj);
+            localStorage.setItem("gateWay", JSON.stringify(newobj));
+        }
+        that.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '添加成功',
+          type: 'success',
+        });
+        setTimeout(location.reload() , 1000)  //添加成功 刷新页面
+    },
+
   },
 }
 
 </script>
 <style lang="scss" scoped>
-@import "@/assets/css/vant_new.scss"; 
+@import "@/assets/css/vant_new.scss";
   #Bankpay{
     width: 100%;
     height: 100%;
-    // background-color: aquamarine;
     padding-top: 50px;
     box-sizing: border-box;
     position: relative;
     .content_info{
       width: 90%;
-      height: 420px;
+      height: 350px;
     }
-      
+
   }
 </style>

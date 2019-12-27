@@ -48,17 +48,16 @@
         <label>公钥</label>
         <span style="color: #8BF692" v-if="$store.state.upkeys">已上传</span>
         <span style="color: #8BF692" @click="upkeys()" v-else>生成并上传</span>
-        
       </div>
       <div class="button_area">
-        <button>保存</button>
+        <button @click="save">保存</button>
       </div>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable */
-import { Toast } from 'vant'
+import {jsonGetLocalAll} from '@/assets/js/coin/c2c.js';
 export default {
   name: 'Wepay',
   data () {
@@ -72,20 +71,17 @@ export default {
       gateway_name:"",
     }
   },
-  mounted(){
-      
-  },
   methods:{
     area_select(v){
       if(v == "area"){
         this.gateway_name = "";
-        this.v_coin = "选择币种"; 
-        for(let i in this.select_info){ 
+        this.v_coin = "选择币种";
+        for(let i in this.select_info){
           //币种根据国家/地区而显示
           if(this.v_area == this.select_info[i]['value']){
             this.coin_list=this.select_info[i]['coin']
           }
-      }   
+      }
       }else{
         if( this.v_area != "选择国家/地区" && this.v_coin != "选择币种"){
           this.gateway_name = this.v_area+"-WP-"+this.v_coin;
@@ -95,14 +91,85 @@ export default {
       }
     },
     upkeys(){
-      this.$store.dispatch("asyncUpkeys")
-    }
+      this.$emit("upkeys")
+    },
+    save(){
+      if(!this.v_area || this.v_area == "选择国家/地区"){
+        this.$toast({
+          forbidClick: true,    // 禁用背景点击
+          mask:true,
+          message: '请选择地区',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.v_coin || this.v_coin == "选择币种"){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '请选择币种',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.v_account){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '绑定手机号缺失',
+          type: 'fail',
+        });
+        return;
+      }
+      if(!this.gateway_name){
+        this.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '未找到网关',
+          type: 'fail',
+        });
+        return;
+      }
+      var gateWay_All = jsonGetLocalAll();
+      var that = this
+      if (undefined !== gateWay_All) {
+            gateWay_All.forEach(function (value,index) {
+              if (value.gateWay == that.gateway_name) {
+                  gateWay_All.splice(index, 1);
+                  return false;
+              }
+            })
+            var obj = {};
+            obj.gateWay = this.gateway_name;
+            obj.country = this.v_area;
+            obj.coin = this.v_coin;
+            obj.account = this.v_account;
+            gateWay_All.push(obj);
+            localStorage.setItem("gateWay", JSON.stringify(gateWay_All));
+        } else {
+            var newobj = [];
+            var obj = {};
+            obj.gateWay = this.gateway_name;
+            obj.country = this.v_area;
+            obj.coin = this.v_coin;
+            obj.account = this.v_account;
+            newobj.push(obj);
+            localStorage.setItem("gateWay", JSON.stringify(newobj));
+        }
+        that.$toast({
+          forbidClick: true,
+          mask:true,
+          message: '添加成功',
+          type: 'success',
+        });
+        setTimeout(location.reload() , 1000)  //添加成功 刷新页面
+    },
   },
 }
 
 </script>
 <style lang="scss" scoped>
-@import "@/assets/css/vant_new.scss"; 
+@import "@/assets/css/vant_new.scss";
   #Wepay{
     width: 100%;
     height: 100%;
@@ -113,6 +180,6 @@ export default {
       width: 90%;
       height: 195px;
     }
-      
+
   }
 </style>

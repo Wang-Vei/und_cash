@@ -19,10 +19,12 @@ import '@/assets/js/coin/c2c.js';
 import '@/assets/js/coin/common.js';
 import '@/assets/js/base.js';
 import '@/assets/js/config.js';
+
 import { Toast } from 'vant';
 Vue.use(Toast, Vuex);
 Vue.prototype.$axios = axios;
 Vue.prototype.$qs = Qs;
+
 
 fastClick.attach(document.body); //防止移动端300ms的点击延迟
 // Vue.config.devtools = false; //关闭dev模式
