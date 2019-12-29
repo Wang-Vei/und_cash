@@ -26,78 +26,6 @@
             </li>
           </div>
         </div>
-        <div class="merchant_item">
-          <div class="item_left">
-            <li class="merchant_title">
-              <span class="logo_img"><img src="" alt=""></span>&nbsp;&nbsp; conconconcoin &nbsp;&nbsp;
-              <span>LV2</span>
-            </li>
-            <li>汇率：1 UNDT=1 USD</li>
-            <li>国家/地区：Hong Kong</li>
-            <li>交易金额： $ 10000-$ 30000</li>
-          </div>
-          <div class="item_right">
-            <li >成交率： 98%</li>
-            <li class="merchant_price">￥<span>64,375.00</span></li>
-            <li>
-              <button>购买</button>
-            </li>
-          </div>
-        </div>
-        <div class="merchant_item">
-          <div class="item_left">
-            <li class="merchant_title">
-              <span class="logo_img"><img src="" alt=""></span>&nbsp;&nbsp; conconconcoin &nbsp;&nbsp;
-              <span>LV2</span>
-            </li>
-            <li>汇率：1 UNDT=1 USD</li>
-            <li>国家/地区：Hong Kong</li>
-            <li>交易金额： $ 10000-$ 30000</li>
-          </div>
-          <div class="item_right">
-            <li >成交率： 98%</li>
-            <li class="merchant_price">￥<span>64,375.00</span></li>
-            <li>
-              <button>购买</button>
-            </li>
-          </div>
-        </div>
-        <div class="merchant_item">
-          <div class="item_left">
-            <li class="merchant_title">
-              <span class="logo_img"><img src="" alt=""></span>&nbsp;&nbsp; conconconcoin &nbsp;&nbsp;
-              <span>LV2</span>
-            </li>
-            <li>汇率：1 UNDT=1 USD</li>
-            <li>国家/地区：Hong Kong</li>
-            <li>交易金额： $ 10000-$ 30000</li>
-          </div>
-          <div class="item_right">
-            <li >成交率： 98%</li>
-            <li class="merchant_price">￥<span>64,375.00</span></li>
-            <li>
-              <button>购买</button>
-            </li>
-          </div>
-        </div>
-        <div class="merchant_item">
-          <div class="item_left">
-            <li class="merchant_title">
-              <span class="logo_img"><img src="" alt=""></span>&nbsp;&nbsp; conconconcoin &nbsp;&nbsp;
-              <span>LV2</span>
-            </li>
-            <li>汇率：1 UNDT=1 USD</li>
-            <li>国家/地区：Hong Kong</li>
-            <li>交易金额： $ 10000-$ 30000</li>
-          </div>
-          <div class="item_right">
-            <li >成交率： 98%</li>
-            <li class="merchant_price">￥<span>64,375.00</span></li>
-            <li>
-              <button>购买</button>
-            </li>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -105,10 +33,72 @@
 <script>
 export default {
   name: 'Merchant',
+  data(){
+    return {
+      v_coin:"",
+    }
+  },
   methods: {
     handleClose () {
       this.$emit('closeOverly')
-    }
+    },
+    // handleMerchant(gateWay){
+    //   console.log('1111111')
+    //   // $('.merchant_list').empty();
+    //     // let gateWay = $('#unittype option:selected').val();
+    //     let gate_split = gateWay.split("-");
+    //     if (gateWay) {
+    //         let arbitrationMarginRatio = $('#ratio').val();
+    //         arbitrationMarginRatio = Number(arbitrationMarginRatio);
+    //         payNum = Number(payNum);
+    //         if (payNum <= 0) {
+    //             layer.msg("请先输入支付金额");
+    //             return;
+    //         }
+
+    //         $(".merchant_back").css('display', 'block');
+    //         $('.main').addClass('fixed');
+    //         let Merchant_list = await queryAllMerchantOrders(gateWay); //获取商家信息
+    //         $.each(Merchant_list, async function(index, value) {
+    //             if (value[0] > 0) {
+    //                 var address = await id_address(value[0]);
+    //                 console.log("address:" + address)
+    //                     //获取订单数和申诉数
+    //                 var res = await Statisticss(address);
+    //                 var rate = 0;
+    //                 var merchant_price = value[2] / Math.pow(10, 18);
+    //                 var min_price = value[4] / Math.pow(10, 18);
+    //                 var max_price = value[5] / Math.pow(10, 18);
+    //                 // var deal_price = value[7] / Math.pow(10, 18);
+    //                 var price = payNum * (1 + arbitrationMarginRatio) / merchant_price;
+    //                 price = price.toFixed(4);
+    //                 if (Number(res[0]) > 0) {
+    //                     rate = (Number(res[0]) + Number(res[2]) - Number(res[1])) / Number(res[0]) * 100 + "%"
+    //                 }
+    //                 var str =
+    //                     '<div class="every_merchant">' +
+    //                     '<ul class="item_left">' +
+    //                     '<li class="item_title">' +
+    //                     '<span>id:<span class="merchant_ID">' + value[0] + '</span> </span> <span style="color:#DDC90F;font-size: 14px;">LV' + value[1] + '</span>' +
+    //                     '</li>' +
+    //                     '<li>汇率：1 UNDT=<span class="merchant_price">' + merchant_price + '</span>' + gate_split[2] + '</li>' +
+    //                     '<li>国家/地区：' + gate_split[0] + '</li>' +
+    //                     '<li>交易金额：' + min_price + 'UNDT-' + max_price + 'UNDT</li>' +
+    //                     ' </ul>' +
+    //                     '<ul class="item_right">' +
+    //                     '<li style="color: #fff;font-size: 12px;">成交率：' + rate + '</li>' +
+    //                     '<li style="color: #DDC90F;font-size: 12px;"><span style="font-size: 20px;font-weight: 600;">' + price + 'UNDT</span></li>' +
+    //                     '<button class="changeGateWay">选择</button>' +
+    //                     '</ul>' +
+    //                     '</div>';
+    //                 $('.merchant_list').append(str);
+    //             }
+    //         })
+
+    //     } else {
+    //         layer.msg("请先选择网关")
+    //     }
+    // }
   }
 }
 </script>

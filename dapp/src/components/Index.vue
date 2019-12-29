@@ -35,7 +35,7 @@
                   @confirm="handleOnConfirm"
                 />
               </van-popup>
-              <span class="form_tip">参考汇率：1 UNDT = 0保证金：1%</span>
+              <span class="form_tip">参考汇率：1 UNDT = {{v_exRate}} {{v_coin}}保证金：1%</span>
             </div>
           </div>
           <div class="every_form">
@@ -44,9 +44,9 @@
               <label for="money">支付金额</label>
             </li>
             <div class="form_right_part">
-              <input type="text" class="i_input" id="money" v-model="v_money" placeholder="输入金额">
+              <input type="text" class="i_input" id="money" v-model="v_money" @keydown="costUNDT(this)" @keyup="costUNDT(this)" placeholder="输入金额">
               <span>全部</span><br>
-              <span class="form_tip">扣除金额：0 UNDT</span>
+              <span class="form_tip">扣除金额：{{v_costUNDT}} UNDT</span>
             </div>
           </div>
           <div class="every_form">
@@ -64,7 +64,7 @@
               <label for="dealer">交&nbsp;&nbsp;易&nbsp;&nbsp;商</label>
             </li>
             <div class="form_right_part">
-              <input type="text" class="i_input" id="dealer" v-model="v_dealer" placeholder="系统推荐">
+              <input type="text" class="i_input" id="dealer" v-model="merchantID" placeholder="系统推荐">
               <span @click="handleMerchant_show">查看</span><br>
             </div>
           </div>
@@ -126,7 +126,7 @@
       <Guide v-show="guide_content" transiton="fade"></Guide>
     </transition>
     <!-- 交易商 -->
-    <Merchant v-show="merchant_show" @closeOverly='merchant_show = false'></Merchant>
+    <Merchant v-show="merchant_show" @closeOverly='merchant_show = false' ref ='SelectMerchant'></Merchant>
     <!-- 订单详情 -->
     <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
     <!-- 添加网关 -->
@@ -145,7 +145,9 @@ import Gateways from './gateways'
 import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
 import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
-import {authorize_coin,balance_undt,ethAccounts,authorize_coin_num,jsonGetLocalAll} from '@/assets/js/coin/c2c.js';
+import {authorize_coin,queryAllMerchantOrders,balance_undt,
+ethAccounts,authorize_coin_num,jsonGetLocalAll ,gatewayInfoBase} from '@/assets/js/coin/c2c.js';
+import {onlyNumber} from "@/assets/js/func.js";
 import {CONFIG} from "@/assets/js/config.js";
 import Web3 from 'web3';
 
@@ -157,10 +159,15 @@ export default{
       balance:"",            //账户余额
       balance_lock: false,    // 账户余额的锁
       gateWay_click: false, // 点击选择网关变色
+      v_coin: '',           // 单位(CNY USD ...)
       v_gateWay: '',
       v_money: '',
       v_postscript: '',
       v_dealer: '',
+      v_ratio:0,
+      v_exRate:0,          //汇率 1UNDT 等于 __ v_coin
+      v_costUNDT:"",        //扣除的 UNDT
+      merchantID:"",        //系统推荐的商家ID
       showPicker: false,    // 控制picker隐现
       showGuide: false,     // 新手指南框
       guide_content: false, // 新手指南内容
@@ -262,7 +269,7 @@ export default{
               toast.message ="解锁失败"
               toast.type = 'fail'
               setTimeout(toast.clear(),2000);
-            }
+            } 
         )
     },
 
@@ -277,7 +284,7 @@ export default{
       this.gateWay_click= true    //边框变色
       this.gateWay_list = [];
       var that = this
-      var gateWay_All = jsonGetLocalAll('gateWay');
+      var gateWay_All = jsonGetLocalAll('gateWay');   //从LocalStorage 里面取出
       if (undefined !== gateWay_All) {
         gateWay_All.forEach(function(value) {
           that.gateWay_list.push(value.gateWay);
@@ -285,17 +292,66 @@ export default{
       }
     },
 
+
     //选择器的 确定
-    handleOnConfirm (getWay) {
-      this.v_gateWay = getWay;
-      this.showPicker = false
+    
+    
+    async handleOnConfirm (gateWay) {
+      //按价格倒序商户信息列表
+      var desc_MerchantOrders = [];
+      //当前使用的商户信息索引
+      var current_id = 0;
+      if (gateWay != '') {
+        this.v_gateWay = gateWay;
+        this.showPicker = false
+        let gateWay_arr = gateWay.split("-");
+        this.v_coin=gateWay_arr[2];
+        let maxPrice = 0;
+        let gateWayInfo = await gatewayInfoBase(gateWay);
+        console.log(gateWayInfo);
+        let MerchantOrders = await queryAllMerchantOrders(gateWay);
+        console.log(MerchantOrders);
+        let desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
+            return b[2] - a[2]
+        });
+        console.log(desc_MerchantOrders);
+
+        if (gateWayInfo.status != true) {
+            this.$toast.loading({
+              forbidClick: true,    // 禁用背景点击
+              mask:true,
+              message: '该网关已停止使用',
+              type:'fail',
+            });
+            return;
+        }
+
+        MerchantOrders.forEach(function(n, i) {
+            if (n[2] > maxPrice) {
+                let maxPrice = Number(n[2]);
+                current_id = i;
+            }
+        });
+
+        if (maxPrice > 0) {
+            let maxPrice = maxPrice / Math.pow(10, 18);
+            this.v_exRate=maxPrice;
+        }
+
+        gateWayInfo.arbitrationMarginRatio = Number(gateWayInfo.arbitrationMarginRatio);
+        if (gateWayInfo.arbitrationMarginRatio > 0) {
+            gateWayInfo.arbitrationMarginRatio = gateWayInfo.arbitrationMarginRatio / Math.pow(10, 18);
+            this.v_ratio=gateWayInfo.arbitrationMarginRatio;
+        }
+        this.merchantID = desc_MerchantOrders[current_id][0];
+        this.costUNDT(this.v_money);
+      }
     },
 
     //网关详情  到子组件中
     handleGetway_detail () {
       this.gateway_detail = true
       this.$refs.Getwaydetails.handleGetway_detail(this.v_gateWay);
-
     },
 
 
@@ -309,9 +365,19 @@ export default{
           message: '请选择网关',
           type:'fail',
         });
+        return;
+      }else if(Number(this.v_money) <= 0){
+        this.$toast.loading({
+          forbidClick: true,
+          mask:true,
+          message: '请输入金额',
+          type:'fail',
+        });
+        return;
       }else{
        this.merchant_show = true
-      }
+       this.$refs.SelectMerchant.handleMerchant(this.v_gateWay);
+      } 
     },
 
     //立即提款
@@ -319,7 +385,7 @@ export default{
       this.$toast.loading({
         forbidClick: true,    // 禁用背景点击
         message: '提现成功',
-        loadingType: 'load',
+        loadingType: 'spinner',
         // type: 'fail',
         selector: '#van-toast'
       });
@@ -333,7 +399,39 @@ export default{
           localStorage.setItem('privKey', e.data.privKey);
         })
       }
+    },
+
+    //扣除手续费（UNDT）
+    async costUNDT (obj) {
+        onlyNumber(obj);
+        let temp_num = Number(obj);
+        if (temp_num) {
+            let price = Number(this.v_exRate);
+            console.log(price);
+            let arbitrationMarginRatio = Number(this.v_ratio);
+            console.log(arbitrationMarginRatio);
+            if (price > 0 && arbitrationMarginRatio > 0) {
+                arbitrationMarginRatio = Number(arbitrationMarginRatio);
+                let costNum = temp_num * (1 + arbitrationMarginRatio) / price;
+                this.v_costUNDT = costNum.toFixed(4);
+
+                const authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
+                if (authorize_num <= 0 || authorize_num < costNum) {
+                    // $("#opt").attr("onclick", "shouquan(10000000000000)");
+                    // $("#opt").text("解锁");
+                }
+            }
+            if (temp_num <= 0) {
+                this.v_costUNDT = "0.0000";
+            }
+        } else {
+            this.v_costUNDT = "0.0000";
+        }
     }
+
+    
+
+
   }
 }
 </script>
@@ -449,7 +547,7 @@ $g_c:#666;
         }
       }
       .i_input {
-        width: 83%;
+        width: 82%;
         height: 80px;
         font-size: 22px;
         border-color:$i_bor;
