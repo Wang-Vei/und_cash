@@ -1,9 +1,9 @@
 /* eslint-disable */
 <template>
-  <div id="Orderdetails">
+  <div id="Orderdetails" @click="handleCloseDetail">
     <div class="overly_part">
       <div class="overly_title">
-        <i class="iconfont icon-guanbi-cu" @click="handleCloseDetail"></i>
+        <!-- <i class="iconfont icon-guanbi-cu" @click="handleCloseDetail"></i> -->
         <span>订单详情</span>
       </div>
       <div class="overly_content">

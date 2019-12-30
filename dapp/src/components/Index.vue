@@ -18,7 +18,7 @@
           <div class="every_form">
             <li class="have_tip">
               <i class="iconfont icon-wangguan" style="display:inline-block;transform:rotate(60deg);"></i>
-              <label for="gateWay">选择网关</label>
+              <label>选择网关</label>
             </li>
             <div class="form_right_part" v-clickoutside="handleClean_getWay">
               <div class="select_getWay">
@@ -44,7 +44,7 @@
               <label for="money">支付金额</label>
             </li>
             <div class="form_right_part">
-              <input type="text" class="i_input" id="money" v-model="v_money" @keydown="costUNDT(this)" @keyup="costUNDT(this)" placeholder="输入金额">
+              <input type="text" class="i_input" id="money" v-model="v_money" @keydown="costUNDT(v_money)" @keyup="costUNDT(v_money)" placeholder="输入金额">
               <span>全部</span><br>
               <span class="form_tip">扣除金额：{{v_costUNDT}} UNDT</span>
             </div>
@@ -79,32 +79,7 @@
       </van-tab>
 <!-- 交易记录页 -->
       <van-tab title="交易记录">
-        <table>
-          <tr class="record_header">
-            <th><i class="iconfont icon-shijian"></i> 时间</th>
-            <th><i class="iconfont icon-zhifu"></i> 金额</th>
-            <th><i class="iconfont icon-richu2"></i> 操作</th>
-            <th><i class="iconfont icon-zhuyi"></i> 状态</th>
-          </tr>
-          <tr class="record_item" @click="record_detail= true">
-            <td>2019-11-30</td>
-            <td>1803.20 UNDT</td>
-            <td>正常</td>
-            <td>待审核</td>
-          </tr>
-          <tr class="record_item">
-            <td>2019-11-30</td>
-            <td>1803.20 UNDT</td>
-            <td>正常</td>
-            <td>待审核</td>
-          </tr>
-          <tr class="record_item">
-            <td>2019-11-30</td>
-            <td>1803.20 UNDT</td>
-            <td>正常</td>
-            <td>待审核</td>
-          </tr>
-        </table>
+        <Order></Order>
       </van-tab>
 <!-- 交易记录页结束 -->
     </van-tabs>
@@ -126,9 +101,7 @@
       <Guide v-show="guide_content" transiton="fade"></Guide>
     </transition>
     <!-- 交易商 -->
-    <Merchant v-show="merchant_show" @closeOverly='merchant_show = false' ref ='SelectMerchant'></Merchant>
-    <!-- 订单详情 -->
-    <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
+    <Merchant v-show="merchant_show" @closeOverly='merchant_show = false' ref ='SelectMerchant' @handleChoiced = "handleChoiced"></Merchant>
     <!-- 添加网关 -->
     <Gateways v-show="gateWay" @closeGateways="gateWay= false"></Gateways>
   </div>
@@ -138,9 +111,9 @@
 import { Tab, Tabs, Picker, Field, Popup, Overlay} from 'vant'
 import Guide from './guide'
 import Merchant from './merchant'
-import Orderdetails from './orderdetails'
 import Getwaydetails from './getwaydetails'
 import Gateways from './gateways'
+import Order from './order'
 
 import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
@@ -150,6 +123,7 @@ ethAccounts,authorize_coin_num,jsonGetLocalAll ,gatewayInfoBase} from '@/assets/
 import {onlyNumber} from "@/assets/js/func.js";
 import {CONFIG} from "@/assets/js/config.js";
 import Web3 from 'web3';
+import { log } from 'util'
 
 export default{
   name: 'index',
@@ -165,19 +139,20 @@ export default{
       v_postscript: '',
       v_dealer: '',
       v_ratio:0,
-      v_exRate:0,          //汇率 1UNDT 等于 __ v_coin
+      v_exRate:0,           //汇率 1UNDT 等于 __ v_coin
       v_costUNDT:"",        //扣除的 UNDT
       merchantID:"",        //系统推荐的商家ID
       showPicker: false,    // 控制picker隐现
       showGuide: false,     // 新手指南框
       guide_content: false, // 新手指南内容
       merchant_show: false, // 商家显示
-      record_detail: false, // 订单详情
+      
       gateway_detail: false, // 网关详情
       gateWay: false,       // 添加网关
       gateWay_list: [],
     }
   },
+  
   components:{
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
@@ -187,9 +162,9 @@ export default{
     [Overlay.name]: Overlay,
     Guide,
     Merchant,
-    Orderdetails,
     Getwaydetails,
     Gateways,
+    Order,
   },
    //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
   directives: {
@@ -269,7 +244,7 @@ export default{
               toast.message ="解锁失败"
               toast.type = 'fail'
               setTimeout(toast.clear(),2000);
-            } 
+            }
         )
     },
 
@@ -278,13 +253,14 @@ export default{
       this.gateWay_click = false
     },
 
-    //选择网关
+    //点击选择网关
     handleChoise_getWay () {
       this.showPicker = true;     //选择器弹出
       this.gateWay_click= true    //边框变色
       this.gateWay_list = [];
       var that = this
-      var gateWay_All = jsonGetLocalAll('gateWay');   //从LocalStorage 里面取出
+      var gateWay_All = jsonGetLocalAll('gateWay');
+      //从LocalStorage 里面取出 渲染到 picker中
       if (undefined !== gateWay_All) {
         gateWay_All.forEach(function(value) {
           that.gateWay_list.push(value.gateWay);
@@ -294,8 +270,6 @@ export default{
 
 
     //选择器的 确定
-    
-    
     async handleOnConfirm (gateWay) {
       //按价格倒序商户信息列表
       var desc_MerchantOrders = [];
@@ -306,11 +280,10 @@ export default{
         this.showPicker = false
         let gateWay_arr = gateWay.split("-");
         this.v_coin=gateWay_arr[2];
-        let maxPrice = 0;
+        var maxPrice = 0;
         let gateWayInfo = await gatewayInfoBase(gateWay);
         console.log(gateWayInfo);
         let MerchantOrders = await queryAllMerchantOrders(gateWay);
-        console.log(MerchantOrders);
         let desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
             return b[2] - a[2]
         });
@@ -320,28 +293,39 @@ export default{
             this.$toast.loading({
               forbidClick: true,    // 禁用背景点击
               mask:true,
-              message: '该网关已停止使用',
+              message: '该网关停止使用',
               type:'fail',
             });
+            this.v_ratio = 0;
+            this.v_money = "";
+            this.v_postscript = ""
+            this.v_exRate = 0;
+            this.v_costUNDT = "";
+            this.merchantID = "";
             return;
         }
 
         MerchantOrders.forEach(function(n, i) {
             if (n[2] > maxPrice) {
-                let maxPrice = Number(n[2]);
+                maxPrice = Number(n[2]);
                 current_id = i;
             }
         });
 
         if (maxPrice > 0) {
-            let maxPrice = maxPrice / Math.pow(10, 18);
-            this.v_exRate=maxPrice;
+            maxPrice = String(maxPrice);
+            maxPrice = this.toolNumber(maxPrice);
+            maxPrice = web3.utils.fromWei(maxPrice, 'ether');
+            maxPrice = web3.utils.fromWei(maxPrice, 'mwei');
+            maxPrice = Number(maxPrice);
+            console.log(maxPrice);
+            this.v_exRate = maxPrice;
         }
 
         gateWayInfo.arbitrationMarginRatio = Number(gateWayInfo.arbitrationMarginRatio);
         if (gateWayInfo.arbitrationMarginRatio > 0) {
             gateWayInfo.arbitrationMarginRatio = gateWayInfo.arbitrationMarginRatio / Math.pow(10, 18);
-            this.v_ratio=gateWayInfo.arbitrationMarginRatio;
+            this.v_ratio = gateWayInfo.arbitrationMarginRatio;
         }
         this.merchantID = desc_MerchantOrders[current_id][0];
         this.costUNDT(this.v_money);
@@ -376,8 +360,8 @@ export default{
         return;
       }else{
        this.merchant_show = true
-       this.$refs.SelectMerchant.handleMerchant(this.v_gateWay);
-      } 
+       this.$refs.SelectMerchant.handleMerchant(this.v_gateWay,this.v_ratio,this.v_money);
+      }
     },
 
     //立即提款
@@ -390,6 +374,7 @@ export default{
         selector: '#van-toast'
       });
     },
+
     //设置公钥私钥
     setrsakey() {
       var pubKey = localStorage.getItem(String('pubKey'));
@@ -403,13 +388,11 @@ export default{
 
     //扣除手续费（UNDT）
     async costUNDT (obj) {
-        onlyNumber(obj);
+        // onlyNumber(obj);
         let temp_num = Number(obj);
         if (temp_num) {
             let price = Number(this.v_exRate);
-            console.log(price);
             let arbitrationMarginRatio = Number(this.v_ratio);
-            console.log(arbitrationMarginRatio);
             if (price > 0 && arbitrationMarginRatio > 0) {
                 arbitrationMarginRatio = Number(arbitrationMarginRatio);
                 let costNum = temp_num * (1 + arbitrationMarginRatio) / price;
@@ -427,9 +410,41 @@ export default{
         } else {
             this.v_costUNDT = "0.0000";
         }
+    },
+
+    //选中商家
+    handleChoiced:function(id,price) {
+      console.log(66666666);
+      console.log(id,",",price);
+      this.merchantID = id;
+      this.v_exRate = price;
+      this.merchant_show = false;
+    },
+
+    //处理小数位
+    toolNumber(param) {
+        let strParam = String(param)
+        let flag = /e/.test(strParam)
+        if (!flag) return param
+
+        // 指数符号 true: 正，false: 负
+        let sysbol = true
+        if (/e-/.test(strParam)) {
+            sysbol = false
+        }
+        // 指数
+        let index = Number(strParam.match(/\d+$/)[0])
+            // 基数
+        let basis = strParam.match(/^[\d\.]+/)[0].replace(/\./, '')
+
+        if (sysbol) {
+            return basis.padEnd(index + 1, 0)
+        } else {
+            return basis.padStart(index + basis.length, 0).replace(/^0/, '0.')
+        }
     }
 
-    
+
 
 
   }
@@ -572,7 +587,7 @@ $g_c:#666;
           .getWay_icon_xia{
             position: absolute;
             top: 40%;
-            right: 80px;
+            right: 85px;
           }
           .getWay_details{
             width: 70px;
@@ -649,38 +664,6 @@ $g_c:#666;
     // margin-top: 2%;
     @include button_common;
   }
-  table{
-    width: 100%;
-    outline: none;
-    tr{
-      border-bottom: 1px solid $order_c;
-      th{
-        width: 25%;
-        height: 82px;
-        font-size: 22px;
-        color: $order_c;
-        line-height: 82px;
-        text-align: center;
-        background-color: #232625;
-        i{
-          font-size: 26px;
-          color: $order_c;
-        }
-        .icon-shijian{
-          font-size: 20px;
-          font-weight: 600
-        }
-      }
-      td{
-        width: 25%;
-        height: 60px;
-        font-size: 22px;
-        color: #fff;
-        line-height: 60px;
-        text-align: center;
-        background-color: #282E2A;
-      }
-    }
-  }
+
 }
 </style>
