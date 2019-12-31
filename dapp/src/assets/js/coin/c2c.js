@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Web3 from 'web3';
+import {JSEncrypt} from 'jsencrypt';
 import { CONFIG } from "@/assets/js/config.js";
 import { SwarmClient } from '@erebos/swarm';
 //local storage 的getaWay 字符串对象转换
@@ -11,6 +12,28 @@ export function jsonGetLocalAll() {
       var objLocal = JSON.parse(local);
       return objLocal;
     }
+
+//提交时调用
+export function encrypted(str) {
+  var encrypt = new JSEncrypt();
+  encrypt.setPublicKey(localStorage.getItem(String('pubKey')));
+  var encrypted = encrypt.encrypt(str);
+  return encrypted;
+}
+
+export function encrypted2(str, key) {
+  var encrypt = new JSEncrypt();
+  encrypt.setPublicKey(key);
+  var encrypted = encrypt.encrypt(str);
+  return encrypted;
+}
+
+export function decrypt(encrypted) {
+  var decrypt = new JSEncrypt();
+  decrypt.setPrivateKey(localStorage.getItem(String('privKey')));
+  var uncrypted = decrypt.decrypt(encrypted);
+  return uncrypted;
+}
 //挂卖单
 export async function sellOrder(merchantID, gateWay, price, fee, cashAmount, orderInfoA) {
     let account = await ethAccounts();
@@ -503,7 +526,7 @@ export async function download(str) {
     const client = new SwarmClient({
         http: 'https://swarm-gateways.net',
     })
-    info = client.bzz.download(str).then(res => res.text());
+    var info = client.bzz.download(str).then(res => res.text());
     return info;
 }
 

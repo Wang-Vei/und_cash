@@ -104,6 +104,8 @@
     <Merchant v-show="merchant_show" @closeOverly='merchant_show = false' ref ='SelectMerchant' @handleChoiced = "handleChoiced"></Merchant>
     <!-- 添加网关 -->
     <Gateways v-show="gateWay" @closeGateways="gateWay= false"></Gateways>
+    <!-- 支付详情 -->
+    <Paydetail v-show="Paydetail" @closePaydetail="Paydetail= false"></Paydetail>
   </div>
 </template>
 <script>
@@ -114,16 +116,18 @@ import Merchant from './merchant'
 import Getwaydetails from './getwaydetails'
 import Gateways from './gateways'
 import Order from './order'
+import Paydetail from './paydetail'
 
 import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
 import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
 import {authorize_coin,queryAllMerchantOrders,balance_undt,
-ethAccounts,authorize_coin_num,jsonGetLocalAll ,gatewayInfoBase} from '@/assets/js/coin/c2c.js';
+  ethAccounts,authorize_coin_num,jsonGetLocalAll ,
+  gatewayInfoBase,rsaKeys,download,upload,
+  merchants,encrypted,encrypted2,id_address,checker} from '@/assets/js/coin/c2c.js';
 import {onlyNumber} from "@/assets/js/func.js";
 import {CONFIG} from "@/assets/js/config.js";
 import Web3 from 'web3';
-import { log } from 'util'
 
 export default{
   name: 'index',
@@ -146,13 +150,17 @@ export default{
       showGuide: false,     // 新手指南框
       guide_content: false, // 新手指南内容
       merchant_show: false, // 商家显示
-      
-      gateway_detail: false, // 网关详情
-      gateWay: false,       // 添加网关
+      desc_MerchantOrders:[],//按价格倒序商户信息列表
+      current_id:"",         //当前使用的商户信息索引
+      // fee:"",             //手续费
+
+      gateway_detail: false,  // 网关详情
+      gateWay: false,         // 添加网关
+      Paydetail: false,        // 支付详情
       gateWay_list: [],
     }
   },
-  
+
   components:{
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
@@ -165,6 +173,7 @@ export default{
     Getwaydetails,
     Gateways,
     Order,
+    Paydetail,
   },
    //自定义指令  定义点击为非指定节点的行为 v-clickoutside（选择网关边框变色）
   directives: {
@@ -271,10 +280,8 @@ export default{
 
     //选择器的 确定
     async handleOnConfirm (gateWay) {
-      //按价格倒序商户信息列表
-      var desc_MerchantOrders = [];
       //当前使用的商户信息索引
-      var current_id = 0;
+      var current_id = this.current_id;
       if (gateWay != '') {
         this.v_gateWay = gateWay;
         this.showPicker = false
@@ -284,10 +291,11 @@ export default{
         let gateWayInfo = await gatewayInfoBase(gateWay);
         console.log(gateWayInfo);
         let MerchantOrders = await queryAllMerchantOrders(gateWay);
-        let desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
+        //按价格倒序商户信息列表
+        this.desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
             return b[2] - a[2]
         });
-        console.log(desc_MerchantOrders);
+        console.log(this.desc_MerchantOrders);
 
         if (gateWayInfo.status != true) {
             this.$toast.loading({
@@ -327,9 +335,10 @@ export default{
             gateWayInfo.arbitrationMarginRatio = gateWayInfo.arbitrationMarginRatio / Math.pow(10, 18);
             this.v_ratio = gateWayInfo.arbitrationMarginRatio;
         }
-        this.merchantID = desc_MerchantOrders[current_id][0];
+        this.merchantID = this.desc_MerchantOrders[current_id][0];
         this.costUNDT(this.v_money);
       }
+      this.current_id = current_id;
     },
 
     //网关详情  到子组件中
@@ -365,14 +374,196 @@ export default{
     },
 
     //立即提款
-    handleConfirm () {
-      this.$toast.loading({
+    async handleConfirm () {
+      var that = this
+      var toast = this.$toast.loading({
         forbidClick: true,    // 禁用背景点击
-        message: '提现成功',
+        message: '请稍候！',
+        overlay:true,
         loadingType: 'spinner',
-        // type: 'fail',
-        selector: '#van-toast'
       });
+      let desc_MerchantOrders =this.desc_MerchantOrders;
+      let submit = false;
+      let costUNDTnum = 0;
+      let price = 0;
+      let ratio = this.v_ratio;
+      let payNum = this.v_money;
+      let costUNDTs = this.v_costUNDT;
+      let gateWay = this.v_gateWay;
+      let balance = this.balance;
+      let localJson = localStorage.getItem(String('gateWay'));
+      localJson = JSON.parse(localJson);
+
+      if (payNum <= 0) {
+        this.$toast.loading({
+            forbidClick: true,    // 禁用背景点击
+            message: '请输入提款金额',
+            type: 'fail',
+          });
+        return;
+      }
+
+      if (costUNDTs < 10) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '扣除金额应大于10',
+          type: 'fail',
+        });
+        return;
+      }
+      var current_id = this.current_id
+      for (let i = 0; i < desc_MerchantOrders.length; i++) {
+        if (desc_MerchantOrders[i][0] > 0) {
+          price = web3.utils.fromWei(desc_MerchantOrders[i][2], 'ether');
+          price = web3.utils.fromWei(price, 'mwei');
+          price = Number(price);
+          costUNDTnum = Number(payNum * (1 + ratio) / price).toFixed(4);
+
+          let temp_bond = Number(web3.utils.fromWei(desc_MerchantOrders[i][7], 'ether'));
+          let temp_bondUser = Number(web3.utils.fromWei(desc_MerchantOrders[i][8], 'ether'));
+          let temp_level = Number(desc_MerchantOrders[i][1]);
+          let temp_minNum = Number(web3.utils.fromWei(desc_MerchantOrders[i][4], 'ether'));
+          let temp_maxNum = Number(web3.utils.fromWei(desc_MerchantOrders[i][5], 'ether'));
+          let goods = Number(desc_MerchantOrders[i][3]);
+
+          if (((temp_bond > temp_bondUser && temp_bond > (costUNDTnum / 2) && temp_level == 1) || temp_level == 2) && temp_minNum <= costUNDTnum && temp_maxNum >= costUNDTnum && goods >= payNum) {
+            current_id = i; //满足条件的商户索引
+            this.v_exRate = price;
+            this.v_costUNDT = costUNDTnum;
+            submit = true;
+            break;
+          }
+        }
+      };
+
+      if (costUNDTnum > balance || balance <= 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '余额不足',
+          type: 'fail',
+        });
+        return;
+      }
+
+      if (submit == false) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '未找到满足条件的商户',
+          type: 'fail',
+        });
+        return;
+      }
+      let my_address = this.address;
+      let is_merchants = await merchants(my_address);
+      let is_merchants_id = Number(is_merchants.merchantID);
+      if (is_merchants_id != 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '您已经是商户，请更换账号下单',
+          type: 'fail',
+        });
+        return;
+      };
+
+      let fee = desc_MerchantOrders[current_id][6]; //手续费
+      let tokenNum = costUNDTnum; //toekn数量
+      let exPrice = Number(this.v_exRate); //兑换价格
+      let country = ''; //国家
+      let SWIFT = ''; //SWIFT CODE
+      let bank = ''; //银行名称
+      let username = ''; //收款方户名
+      let account = ''; //收款方账号
+      let coin = ''; //币种
+      let aolastName = this.v_postscript; //附言
+
+      //
+      // if (fee > 0) {
+      //   $("#hidden_fee").css('display', '-webkit-flex');
+      //   $("#fee").text(fee / Math.pow(10, 18));
+      // }
+
+      let flag = false;
+      localJson.forEach(function(n,i) {
+        if (gateWay == n.gateWay) {
+          country = n.country;
+          SWIFT = n.code;
+          bank = n.bank;
+          username = n.username;
+          account = n.account;
+          coin = n.coin;
+          flag = true;
+          return false;
+        }
+      });
+      if (flag == false) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '未找到匹配网关',
+          type: 'fail',
+        });
+        return;
+      }
+
+      let authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
+      authorize_num = Number(authorize_num);
+      if (authorize_num <= 0 || authorize_num < tokenNum) {
+        this.$toast.loading({
+          forbidClick: true,
+          message: '请先解锁',
+          type: 'fail',
+        });
+        return;
+      }
+      let json_str = {
+        "token": tokenNum,
+        "exPrice": exPrice,
+        "fee": fee,
+        "country": country,
+        "swift": SWIFT,
+        "bank": bank,
+        "username": username,
+        "account": account,
+        "aolastName": aolastName,
+        "coin": coin
+      };
+      json_str = JSON.stringify(json_str);
+      let user_str = encrypted(json_str);
+
+      let address = await id_address(desc_MerchantOrders[current_id][0]);
+      let checkerS = await checker(gateWay);
+      let hash_checker = await rsaKeys(checkerS);
+      let rsaKey_checker = await download(hash_checker);
+      let hash = await rsaKeys(address);
+      let rsaKey = await download(hash);
+      let businessStr = encrypted2(json_str, rsaKey);
+      let checkerStr = encrypted2(json_str, rsaKey_checker);
+      let orderInfoB = user_str + "," + businessStr + "," + checkerStr;
+      let orderInfoA = await upload(orderInfoB);
+      payNum = payNum.toString();
+      exPrice = exPrice.toString();
+      payNum = web3.utils.toWei(payNum, 'mwei');
+      exPrice = web3.utils.toWei(exPrice, 'mwei');
+
+      let order_info = {
+        "merchantID": desc_MerchantOrders[current_id][0],
+        "gateWay": gateWay,
+        "price": exPrice,
+        "fee": fee,
+        "cashAmount": payNum,
+        "orderInfoA": orderInfoA
+      };
+
+
+      localStorage.setItem('userStr', user_str);
+      localStorage.setItem('order_info', JSON.stringify(order_info));
+
+      setTimeout(function() {
+        toast.clear();
+        console.log("OKOK")
+        that.Paydetail = true;
+      }, 500);
+      this.desc_MerchantOrders = desc_MerchantOrders;
+      this.current_id = current_id;
     },
 
     //设置公钥私钥
@@ -664,6 +855,5 @@ $g_c:#666;
     // margin-top: 2%;
     @include button_common;
   }
-
 }
 </style>
