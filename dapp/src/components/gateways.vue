@@ -16,12 +16,12 @@
         <van-tab title="加密货币">
           <Bitpay @upkeys="handleUpkeys"></Bitpay>
         </van-tab>
-        <!--<van-tab title="支付宝">-->
-          <!--<Alipay @upkeys="handleUpkeys"></Alipay>-->
-        <!--</van-tab>-->
-        <!--<van-tab title="微信">-->
-          <!--<Wepay @upkeys="handleUpkeys"></Wepay>-->
-        <!--</van-tab>-->
+<!--        <van-tab title="支付宝">-->
+<!--          <Alipay @upkeys="handleUpkeys"></Alipay>-->
+<!--        </van-tab>-->
+<!--        <van-tab title="微信">-->
+<!--          <Wepay @upkeys="handleUpkeys"></Wepay>-->
+<!--        </van-tab>-->
       </van-tabs>
     </div>
   </div>
@@ -59,30 +59,29 @@ export default {
   mounted()
   {
     let init_exchange = async() => {
-        try {
-            //实例化web3
-            window.web3 = await getWeb3();
-            //实例化需要用到的合约
-            window.Contract_undt = await getContract(abi_undt, CONFIG.undt_addr);
-            window.Contract_c2c = await getContract(abi_c2c, CONFIG.c2c_addr);
-            let account = await ethAccounts();
-            console.log(account);
-            let rsakeys = await rsaKeys(account);
-            if (rsakeys) {
-              this.$store.dispatch("asyncUpkeys")
-            }
-        } catch (e) {
-            console.log('实例化失败')
-            this.$toast({
-              //duration: 0, // 持续展示 toast
-              forbidClick: true, // 禁用背景点击
-              mask: true,
-              message: '实例化失败',
-              Type: "fail",
-            });
+      try {
+        //实例化web3
+        window.web3 = await getWeb3();
+        //实例化需要用到的合约
+        window.Contract_undt = await getContract(abi_undt, CONFIG.undt_addr);
+        window.Contract_c2c = await getContract(abi_c2c, CONFIG.c2c_addr);
+        let account = await ethAccounts();
+        console.log(account);
+        let rsakeys = await rsaKeys(account);
+        if (rsakeys) {
+          this.$store.dispatch("asyncUpkeys")
         }
+      } catch (e) {
+        console.log('实例化失败')
+        this.$toast({
+          //duration: 0, // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          mask: true,
+          message: '实例化失败',
+          Type: "fail",
+        });
+      }
     }
-
     init_exchange();
   },
   methods: {
@@ -94,40 +93,40 @@ export default {
       var pubKey = localStorage.getItem(String('pubKey'));
       console.log(pubKey);
       if (!pubKey) {
-          this.$toast({
-              //duration: 0,       // 持续展示 toast
-              forbidClick: true, // 禁用背景点击
-              message: '未找到您的公钥',
-              // loadingType: 'load',
-              type: 'fail',
-              // selector: '#van-toast'
-          });
-          return;
+        this.$toast({
+          //duration: 0,       // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          message: '未找到您的公钥',
+          // loadingType: 'load',
+          type: 'fail',
+          // selector: '#van-toast'
+        });
+        return;
       } else {
-          const toast = this.$toast.loading({
-              duration: 0, // 持续展示 toast
-              forbidClick: true, // 禁用背景点击
-              mask: true,
-              message: '上传中...',
-              loadingType: "spinner",
-          });
-          let hash = await upload(pubKey);
-          updateRsaKey(hash).then(
-              function(v) {
-                  console.log(v);
-                  toast.message = "上传成功";
-                  toast.type = 'success';
-                  that.$store.dispatch("asyncUpkeys")
-                  setTimeout(toast.clear(),1000);
-              },
-              function(e) {
-                  console.log(e);
-                  toast.message = "上传失败";
-                  toast.type = 'fail';
-                  setTimeout(toast.clear(),1000);
-                  return false;
-              }
-          );
+        const toast = this.$toast.loading({
+          duration: 0, // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          mask: true,
+          message: '上传中...',
+          loadingType: "spinner",
+        });
+        let hash = await upload(pubKey);
+        updateRsaKey(hash).then(
+          function(v) {
+            console.log(v);
+            toast.message = "上传成功";
+            toast.type = 'success';
+            that.$store.dispatch("asyncUpkeys")
+            setTimeout(toast.clear(),1000);
+          },
+          function(e) {
+            console.log(e);
+            toast.message = "上传失败";
+            toast.type = 'fail';
+            setTimeout(toast.clear(),1000);
+            return false;
+          }
+        );
       }
     }
   }

@@ -24,7 +24,7 @@
             <li class="unit">单价</li>
             <li class="merchant_price"><span>{{item[11]}}</span>&nbsp;U</li>
             <li>
-              <button @click="choice(item[0],item[11])">选择</button>
+              <button @click="choice(item[0],item[12])">选择</button>
             </li>
           </div>
         </div>
@@ -83,8 +83,10 @@ export default {
             value[5] = value[5] / Math.pow(10, 18);    //最大额度
             value[7] = value[7] / Math.pow(10, 18);    //价格
             value[3] = that.toolNumber(value[3]*merchant_price)         //库存（处理后）
-            var price = 1 / merchant_price;
+            var price = 1/Number(merchant_price);
+            console.log(price)
             value[11] = price.toFixed(4);
+            value[12] = merchant_price;
             value[9]=res[0]
             if (Number(res[0]) > 0) {                         //好评率
                 value[10] = (Number(res[0]) + Number(res[2]) - Number(res[1])) / Number(res[0]) * 100 + "%"
@@ -92,6 +94,7 @@ export default {
               value[10] = 0;
             }
             that.merchant_list.push(value);
+            console.log(that.merchant_list);
         }
       })
     },
@@ -122,7 +125,7 @@ export default {
         } else {
             return basis.padStart(index + basis.length, 0).replace(/^0/, '0.')
         }
-    }
+    },
   }
 }
 </script>

@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import {JSEncrypt} from 'jsencrypt';
 import { CONFIG } from "@/assets/js/config.js";
 import { SwarmClient } from '@erebos/swarm';
+
 //local storage 的getaWay 字符串对象转换
 export function jsonGetLocalAll() {
       var local = localStorage.getItem("gateWay");
@@ -27,6 +28,7 @@ export function encrypted2(str, key) {
   var encrypted = encrypt.encrypt(str);
   return encrypted;
 }
+//加密解密
 
 export function decrypt(encrypted) {
   var decrypt = new JSEncrypt();
@@ -62,7 +64,8 @@ export async function cancelOrder(orderID) {
                 return reject(error);
             }
             return resolve(transactionHash);
-        }).on('error', function(error){
+        })
+          .on('error', function(error){
             return reject(error);
         });
     });

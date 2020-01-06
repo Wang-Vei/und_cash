@@ -51,6 +51,7 @@
 export default {
   name:'Guide',
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -99,5 +100,5 @@ export default {
       }
     }
   }
-  
+
 </style>

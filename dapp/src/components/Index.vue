@@ -35,17 +35,17 @@
                   @confirm="handleOnConfirm"
                 />
               </van-popup>
-              <span class="form_tip">参考汇率：1 UNDT = {{v_exRate}} {{v_coin}}保证金：1%</span>
+              <span class="form_tip">参考汇率：1 UNDT = {{v_exRate}} {{v_coin}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保证金：1%</span>
             </div>
           </div>
           <div class="every_form">
             <li class="have_tip">
               <i class="iconfont icon-jine"></i>
-              <label for="money">支付金额</label>
+              <label for="money">提款金额</label>
             </li>
             <div class="form_right_part">
               <input type="text" class="i_input" id="money" v-model="v_money" @keydown="costUNDT(v_money)" @keyup="costUNDT(v_money)" placeholder="输入金额">
-              <span>全部</span><br>
+              <span @click="handleAll">全部</span><br>
               <span class="form_tip">扣除金额：{{v_costUNDT}} UNDT</span>
             </div>
           </div>
@@ -105,7 +105,7 @@
     <!-- 添加网关 -->
     <Gateways v-show="gateWay" @closeGateways="gateWay= false"></Gateways>
     <!-- 支付详情 -->
-    <Paydetail v-show="Paydetail" @closePaydetail="Paydetail= false"></Paydetail>
+    <Paydetail v-show="Paydetail" @closePaydetail="Paydetail= false" ref="loadOrders"></Paydetail>
   </div>
 </template>
 <script>
@@ -229,6 +229,7 @@ export default{
       this.setrsakey();
   },
   methods:{
+
     //解锁
     handleUnlock(){
       var that = this
@@ -277,6 +278,29 @@ export default{
       }
     },
 
+    //全部
+    handleAll(){
+      let temp_num = Number(this.balance);
+      console.log(temp_num);
+      if (temp_num) {
+        let price = this.v_exRate;
+        let arbitrationMarginRatio = this.v_ratio;
+        price = Number(price);
+        console.log(price);
+
+        if (price > 0 && arbitrationMarginRatio > 0) {
+          arbitrationMarginRatio = Number(arbitrationMarginRatio);
+          var costNum = temp_num / (1 + arbitrationMarginRatio) * price;
+          var costNum0 = costNum.toString();
+          var costNum1 = costNum0.indexOf(".");
+          costNum = costNum0.slice(0,costNum1+5)
+          console.log(costNum)
+
+          this.v_costUNDT = this.balance;
+         this.v_money = costNum;
+        }
+      }
+    },
 
     //选择器的 确定
     async handleOnConfirm (gateWay) {
@@ -295,7 +319,6 @@ export default{
         this.desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
             return b[2] - a[2]
         });
-        console.log(this.desc_MerchantOrders);
 
         if (gateWayInfo.status != true) {
             this.$toast.loading({
@@ -314,6 +337,7 @@ export default{
         }
 
         MerchantOrders.forEach(function(n, i) {
+          console.log(n);
             if (n[2] > maxPrice) {
                 maxPrice = Number(n[2]);
                 current_id = i;
@@ -393,6 +417,7 @@ export default{
       let balance = this.balance;
       let localJson = localStorage.getItem(String('gateWay'));
       localJson = JSON.parse(localJson);
+      console.log(payNum);
 
       if (payNum <= 0) {
         this.$toast.loading({
@@ -406,7 +431,7 @@ export default{
       if (costUNDTs < 10) {
         this.$toast.loading({
           forbidClick: true,
-          message: '扣除金额应大于10',
+          message: '扣除金额小于10',
           type: 'fail',
         });
         return;
@@ -418,6 +443,7 @@ export default{
           price = web3.utils.fromWei(price, 'mwei');
           price = Number(price);
           costUNDTnum = Number(payNum * (1 + ratio) / price).toFixed(4);
+
 
           let temp_bond = Number(web3.utils.fromWei(desc_MerchantOrders[i][7], 'ether'));
           let temp_bondUser = Number(web3.utils.fromWei(desc_MerchantOrders[i][8], 'ether'));
@@ -434,12 +460,11 @@ export default{
             break;
           }
         }
-      };
-
-      if (costUNDTnum > balance || balance <= 0) {
+      }
+      if (Number(costUNDTnum) > Number(balance) || Number(balance) <= 0) {
         this.$toast.loading({
           forbidClick: true,
-          message: '余额不足',
+          message: '余额不足000',
           type: 'fail',
         });
         return;
@@ -553,17 +578,15 @@ export default{
         "orderInfoA": orderInfoA
       };
 
-
       localStorage.setItem('userStr', user_str);
       localStorage.setItem('order_info', JSON.stringify(order_info));
-
+      that.Paydetail = true;
       setTimeout(function() {
         toast.clear();
-        console.log("OKOK")
-        that.Paydetail = true;
       }, 500);
       this.desc_MerchantOrders = desc_MerchantOrders;
       this.current_id = current_id;
+      this.$refs.loadOrders.loadPay()
     },
 
     //设置公钥私钥
@@ -578,8 +601,8 @@ export default{
     },
 
     //扣除手续费（UNDT）
-    async costUNDT (obj) {
-        // onlyNumber(obj);
+    async costUNDT(obj) {
+        onlyNumber(obj);
         let temp_num = Number(obj);
         if (temp_num) {
             let price = Number(this.v_exRate);
@@ -604,12 +627,13 @@ export default{
     },
 
     //选中商家
-    handleChoiced:function(id,price) {
-      console.log(66666666);
+    handleChoiced(id,price) {
+
       console.log(id,",",price);
       this.merchantID = id;
-      this.v_exRate = price;
+      this.v_exRate = Number(price);
       this.merchant_show = false;
+      this.costUNDT(this.v_money);
     },
 
     //处理小数位

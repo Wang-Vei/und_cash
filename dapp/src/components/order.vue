@@ -10,22 +10,23 @@
               <th><i class="iconfont icon-zhuyi"></i> 状态</th>
               <th><i class="iconfont icon-richu2"></i> 操作</th>
             </tr>
-            <tr class="record_item" v-if="order_list.length > 0" v-for="item in order_list" @click="record_detail= true">
+            <tr class="record_item" v-if="order_list.length > 0" v-for="item in order_list" @click="handleRecord_detail(item.ID)" >
               <td>{{item.beginTime}}</td>
               <td>{{item.num}} {{item.unit}}</td>
               <td>{{item.status}}</td>
               <td>
-                <span class="action" v-if="item.orderStatus == 1" @click="handleAction('cancel',item.orderStatus)" @click.stop>取消交易</span>
-                <span class="action" v-else-if="item.orderStatus == 2" @click="handleAction('appeal',item.orderStatus)" @click.stop>申诉</span>
+                <span class="action" v-if="item.orderStatus == 1" @click="handleAction('cancel',item.ID)" @click.stop>取消交易</span>
+                <span class="action" v-else-if="item.orderStatus == 2" @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>
                 <span class="action" v-else-if="item.orderStatus == 3">
-                  <span @click="handleAction('appeal',item.orderStatus)" @click.stop>申诉</span>
-                  <span @click="handleAction('affirm',item.orderStatus)" @click.stop>确认收款</span>
+                  <span @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>
+                  <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
                 </span>
-                <span class="action" v-else-if="item.orderStatus == 4 || item.orderStatus == 9 || item.orderStatus == 19" @click="handleAction('complain',item.orderStatus)" @click.stop>投诉</span>
-                <span class="action" v-else-if="item.orderStatus == 5 || item.orderStatus == 12 || item.orderStatus == 10" @click="handleAction('select',item.orderStatus)" @click.stop>查看</span>
+                <span class="action" v-else-if="item.orderStatus == 4 || item.orderStatus == 9 || item.orderStatus == 19" @click="handleAction('complain',item.ID)" @click.stop>投诉</span>
+                <span class="action" v-else-if="item.orderStatus == 5" @click="handleAction('select',item.ID,item.orderStatus)" @click.stop>查看进度</span>
+                <span class="action" v-else-if="item.orderStatus == 12 || item.orderStatus == 10">查看</span>
                 <span class="action" v-else-if="item.orderStatus == 13">
-                  <span @click="handleAction('select',item.orderStatus)" @click.stop>查看</span>
-                  <span @click="handleAction('affirm',item.orderStatus)" @click.stop>确认收款</span>
+                  <span>查看</span>
+                  <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
                 </span>
               </td>
             </tr>
@@ -33,13 +34,13 @@
           </table>
     </div>
     <!-- 订单详情 -->
-    <Orderdetails v-show="record_detail" @closeDetails='record_detail = false'></Orderdetails>
+    <Orderdetails v-show="record_detail" @closeDetails='record_detail = false' ref="handleRecord_detail"></Orderdetails>
   </div>
 </template>
 <script>
 /* eslint-disable */
 import Orderdetails from './orderdetails'
-import {ethAccounts,queryAllOrder,orders,cancelOrder} from '@/assets/js/coin/c2c.js';
+import {ethAccounts,queryAllOrder,orders,cancelOrder,appealOrder_Wrong,gatewayInfoBase} from '@/assets/js/coin/c2c.js';
 import {formatTime} from '@/assets/js/func.js';
 import {CONFIG} from '@/assets/js/config.js';
 export default {
@@ -71,51 +72,20 @@ export default {
         let start = 0;
         let limit = 999;
         let orderIDS = await queryAllOrder(Useraddr, 0, gateWay, CONFIG.c2c_addr, start, limit);
+        console.log(orderIDS)
         let len = orderIDS.length;
         var order_list = [];
         for (let i = 0; i < len; i++) {
             if (orderIDS[i] > 0) {
               var id = orderIDS[i];
               var info = await orders(id);
+              info.ID = orderIDS[i]
               info.beginTime = formatTime(info.beginTime, 'Y-M-D');
               info.status = CONFIG["status-msg"][info.orderStatus];
               var gateWayss = info.gateWay;
               var gateWay_arr = gateWayss.split("-");
               info.unit = gateWay_arr[2]
-          //
-          //     var button = "";
-          //     if (info.orderStatus == 1) {
-          //         button = "<span class='cancel'>取消交易</span>";
-          //     }
-          //
-          //     if (info.orderStatus == 2) {
-          //         button = "<span class='upQuestion'>申诉</span>";
-          //     }
-          //
-          //     if (info.orderStatus == 3) {
-          //         button = "<span class='upQuestion'>申诉</span>";
-          //         button += "<span class='confirm'>确认收款</span>";
-          //     }
-          //
-          //     if (info.orderStatus == 4 || info.orderStatus == 9 || info.orderStatus == 19) {
-          //         button = "<span class='appealOrder_Wrong'>投诉</span>";
-          //     }
-          //
-          //     if (info.orderStatus == 5) {
-          //         button = "<a href='./dealAppealMobile.html?id=" + id + "'>查看</a>";
-          //     }
-          //
-          //     if (info.orderStatus == 13) {
-          //         button = "<a href='./dealAppealMobile.html?id=" + id + "'>查看</a>";
-          //         button += "<span class='confirm' style='margin-left: 3px'>确认收款</span>";
-          //     }
-          //
               info.num = web3.utils.fromWei(info.orderCashAmount, 'mwei');
-
-          //
-          //     var str =
-          //     "<tr class='detail-link' orderID='" + id + "'><td>" + date + "</td><td><span>" + num + "</span>" + gateWay_arr[2] + "</td><td>" + status + "</td><td class='td-y'>" + button + "</td></tr>";
-          //     $("#mylist").prepend(str);
               order_list.push(info)
             }
         }
@@ -130,43 +100,118 @@ export default {
         }
 
       },
-      handleAction(v,id){
+      //查看订单详情
+      handleRecord_detail(orderID,sta){
+        this.$refs.handleRecord_detail.handleRecord_detail(orderID,sta)
+        this.record_detail= true
+      },
+      //操作订单
+      handleAction(v,orderID,sta){
+        var toast = this.$toast.loading({
+          duration: 0,          // 持续展示 toast
+          forbidClick: true,    // 禁用背景点击
+          mask:true,
+          message: '请稍等...',
+          loadingType:"spinner",
+        });
+        console.log(orderID)
         if(v == "cancel"){//取消
-          var toast = this.$toast.loading({
-            duration: 0,          // 持续展示 toast
-            forbidClick: true,    // 禁用背景点击
-            mask:true,
-            message: '请稍等...',
-            loadingType:"spinner",
-          });
-          cancelOrder(id).then(
+          cancelOrder(orderID).then(
             function(v) {
               toast.message = '取消成功!';
               toast.type = 'success';
               setTimeout(function () {
-                toast.clear();
+                local.reload()
               },1000)
-              // window.location.reload();
             },
             function(e) {
               console.log(e);
-              toast.message = '取消失败!';
+              toast.message = '操作失败!';
               toast.type = 'fail';
               setTimeout(function () {
-                toast.clear();
+                local.reload()
               },1000)
             }
           )
-        }else if(v == "appeal"){ //申诉
-
-        }else if(v == "affirm"){ //确认收款
-
+        }else if(v == "appeal"){   //申诉
+          this.shensu(orderID);
+        }else if(v == "affirm"){   //确认收款
+          payOrder(orderID).then(
+            function(v) {
+              toast.message = '确认成功!';
+              toast.type = 'success';
+              setTimeout(function () {
+                local.reload()
+              },1000)
+            },
+            function(e) {
+              toast.message = '操作失败!';
+              toast.type = 'fail';
+              setTimeout(function () {
+                local.reload()
+              },1000)
+              console.log(e);
+            }
+          )
         }else if(v == "complain"){ //投诉
-
-        }else{ //查看
-
+          appealOrder_Wrong(orderID).then(
+            function(v) {
+              toast.message = '投诉成功!';
+              toast.type = 'success';
+              setTimeout(function () {
+                local.reload()
+              },1000)
+            },
+            function(e) {
+              toast.message = '投诉失败!';
+              toast.type = 'fali';
+              setTimeout(function () {
+                local.reload()
+              },1000)
+            }
+          );
+        }else{
+          toast.clear();
+          this.handleRecord_detail(orderID,sta)
         }
-
+      },
+      //申诉
+      async shensu(orderID) {
+        let orderInfo = await orders(orderID);
+        let gateWayInfo = await gatewayInfoBase(orderInfo.gateWay);
+        let currentTime = Date.parse(new Date());
+        currentTime = String(currentTime).slice(0, 10);
+        currentTime = Number(currentTime);
+        if ((orderInfo.orderStatus == 2 && (currentTime - orderInfo.beginTime > 2 * gateWayInfo.lockTimestamp)) || (orderInfo.orderStatus == 3 && (currentTime - orderInfo.payTime > gateWayInfo.lockTimestamp))) {
+          appealOrder_NoReceive(orderID).then(
+            function(v) {
+              this.$toast.loading({
+                forbidClick: true,
+                mask:true,
+                message: '成功，等候反馈',
+                type:'success'
+              });
+              setTimeout(function () {
+                local.reload()
+              },1000)
+            },
+            function(e) {
+              this.$toast.loading({
+                forbidClick: true,
+                mask:true,
+                message: '申诉失败',
+                type:'fail'
+              });
+            }
+          );
+        } else {
+          this.$toast.loading({
+            forbidClick: true,
+            mask:true,
+            message: '申诉时间未到',
+            type:'fail'
+          });
+        }
       }
     }
   }

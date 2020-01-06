@@ -32,7 +32,7 @@ $i_bor:#7B7780;
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    border: 1px solid $i_bor;
+    border: 1.001px solid $i_bor;
     background-color: transparent;
 }
 
@@ -119,10 +119,14 @@ $i_bor:#7B7780;
     }
     #Gateways {
         .van-tabs--line .van-tabs__wrap {
+            width: 600px !important;
             height: 70px;
+            display: flex;
+            justify-content: space-around;
         }
         /*导航栏*/
         .van-tabs__nav {
+            width: 600px;
             display: flex;
             justify-content: space-around;
             background-color: transparent;
@@ -130,12 +134,13 @@ $i_bor:#7B7780;
         }
         // /*默认下边框*/
         .van-tabs__line {
-            width: 18% !important;
+            //width: 18% !important;
+            //min-width: 33% !important;
             background-color: green;
         }
         /*所有标签头*/
         .van-tab {
-            max-width: 15%;
+            max-width: 18%;
             border-bottom: 0;
             color: $i_bor;
             font-size: 20px;
@@ -152,6 +157,7 @@ $i_bor:#7B7780;
         /*选中的标签头*/
         .van-tab--active {
             color: $font_c;
+            border-bottom: 1px solid #319B38;
         }
         /*选项卡内容*/
         .van-tab__pane,
