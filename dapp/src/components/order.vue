@@ -2,36 +2,38 @@
 <template>
   <div>
     <div id="Order">
-
+      <table style="display: block;position: sticky;top: 0;width: 100vw">
+        <tr class="record_header" style="display: flex;border-bottom: 1px solid #77807A">
+          <th><i class="iconfont icon-shijian"></i> 时间</th>
+          <th><i class="iconfont icon-zhifu"></i> 金额</th>
+          <th><i class="iconfont icon-zhuyi"></i> 状态</th>
+          <th><i class="iconfont icon-richu2"></i> 操作</th>
+        </tr>
+      </table>
       <table>
-            <tr class="record_header">
-              <th><i class="iconfont icon-shijian"></i> 时间</th>
-              <th><i class="iconfont icon-zhifu"></i> 金额</th>
-              <th><i class="iconfont icon-zhuyi"></i> 状态</th>
-              <th><i class="iconfont icon-richu2"></i> 操作</th>
-            </tr>
-            <tr class="record_item" v-if="order_list.length > 0" v-for="item in order_list" @click="handleRecord_detail(item.ID)" >
-              <td>{{item.beginTime}}</td>
-              <td>{{item.num}} {{item.unit}}</td>
-              <td>{{item.status}}</td>
-              <td>
-                <span class="action" v-if="item.orderStatus == 1" @click="handleAction('cancel',item.ID)" @click.stop>取消交易</span>
-                <span class="action" v-else-if="item.orderStatus == 2" @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>
-                <span class="action" v-else-if="item.orderStatus == 3">
-                  <span @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>
-                  <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
-                </span>
-                <span class="action" v-else-if="item.orderStatus == 4 || item.orderStatus == 9 || item.orderStatus == 19" @click="handleAction('complain',item.ID)" @click.stop>投诉</span>
-                <span class="action" v-else-if="item.orderStatus == 5" @click="handleAction('select',item.ID,item.orderStatus)" @click.stop>查看进度</span>
-                <span class="action" v-else-if="item.orderStatus == 12 || item.orderStatus == 10">查看</span>
-                <span class="action" v-else-if="item.orderStatus == 13">
-                  <span>查看</span>
-                  <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
-                </span>
-              </td>
-            </tr>
-            <tr class="none_list" v-if="order_list.length <= 0"> 暂无订单 </tr>
-          </table>
+        <tr class="record_item" v-if="$store.state.orderList.length > 0" v-for="item in $store.state.orderList" @click="handleRecord_detail(item.ID)" >
+          <td>{{item.beginTime}}</td>
+          <td>{{item.num}} {{item.unit}}</td>
+          <td>{{item.status}}</td>
+          <td>
+            <span class="action" v-if="item.orderStatus == 1" @click="handleAction('cancel',item.ID)" @click.stop>取消交易</span>
+            <span class="action" v-else-if="item.orderStatus == 2" @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>
+            <span class="action" v-else-if="item.orderStatus == 3">
+              <span @click="handleAction('appeal',item.ID)" @click.stop>申诉</span>&nbsp;
+              <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
+            </span>
+            <span class="action" v-else-if="item.orderStatus == 4 || item.orderStatus == 9 || item.orderStatus == 19" @click="handleAction('complain',item.ID)" @click.stop>投诉</span>
+            <span class="action" v-else-if="item.orderStatus == 5" @click="handleAction('select',item.ID,item.orderStatus)" @click.stop>查看进度</span>
+            <span class="action" v-else-if="item.orderStatus == 12 || item.orderStatus == 10 || item.orderStatus == 6 || item.orderStatus == 7" style="color: #666">查看</span>
+            <span class="action" v-else-if="item.orderStatus == 13">
+              <span>查看</span>&nbsp;
+              <span @click="handleAction('affirm',item.ID)" @click.stop>确认收款</span>
+            </span>
+          </td>
+        </tr>
+<!--        <tr style="height: 600px"></tr>-->
+        <tr class="none_list" v-if="$store.state.orderList.length <= 0"> 暂无订单 </tr>
+      </table>
     </div>
     <!-- 订单详情 -->
     <Orderdetails v-show="record_detail" @closeDetails='record_detail = false' ref="handleRecord_detail"></Orderdetails>
@@ -40,9 +42,8 @@
 <script>
 /* eslint-disable */
 import Orderdetails from './orderdetails'
-import {ethAccounts,queryAllOrder,orders,cancelOrder,appealOrder_Wrong,gatewayInfoBase} from '@/assets/js/coin/c2c.js';
-import {formatTime} from '@/assets/js/func.js';
-import {CONFIG} from '@/assets/js/config.js';
+import { Sticky } from 'vant';
+import {appealOrder_NoReceive,orders,cancelOrder,appealOrder_Wrong,gatewayInfoBase,payOrder} from '@/assets/js/coin/c2c.js';
 export default {
   name:'Order',
 
@@ -50,56 +51,22 @@ export default {
     return{
       record_detail: false, // 订单详情
       order_list:[],
+      aaa:"123",
     }
   },
-  mounted(){
-    this.orderList()
-    },
-    components:{
-      Orderdetails,
-    },
-    methods:{
-      async orderList() {
-        const toast=this.$toast.loading({
-          duration: 0,          // 持续展示 toast
-          forbidClick: true,    // 禁用背景点击
-          mask:true,
-          message: '加载中，请稍侯',
-          loadingType:"spinner",
-        });
-        let Useraddr = await ethAccounts();
-        let gateWay = '';
-        let start = 0;
-        let limit = 999;
-        let orderIDS = await queryAllOrder(Useraddr, 0, gateWay, CONFIG.c2c_addr, start, limit);
-        console.log(orderIDS)
-        let len = orderIDS.length;
-        var order_list = [];
-        for (let i = 0; i < len; i++) {
-            if (orderIDS[i] > 0) {
-              var id = orderIDS[i];
-              var info = await orders(id);
-              info.ID = orderIDS[i]
-              info.beginTime = formatTime(info.beginTime, 'Y-M-D');
-              info.status = CONFIG["status-msg"][info.orderStatus];
-              var gateWayss = info.gateWay;
-              var gateWay_arr = gateWayss.split("-");
-              info.unit = gateWay_arr[2]
-              info.num = web3.utils.fromWei(info.orderCashAmount, 'mwei');
-              order_list.push(info)
-            }
-        }
-        this.order_list=order_list;
-
-        if(this.order_list){
-        toast.clear();
+  components:{
+    Orderdetails,
+    [Sticky.name]:Sticky,
+  },
+  mounted () {
+    this.order_list = this.$store.state.orderList;
+      if(this.order_list){
         console.log(this.order_list);
-        }else{
-          toast.clear();
-          this.order_list.length = 0;
-        }
-
-      },
+      }else{
+        this.order_list = [];
+      }
+    },
+  methods:{
       //查看订单详情
       handleRecord_detail(orderID,sta){
         this.$refs.handleRecord_detail.handleRecord_detail(orderID,sta)
@@ -121,7 +88,7 @@ export default {
               toast.message = '取消成功!';
               toast.type = 'success';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             },
             function(e) {
@@ -129,7 +96,7 @@ export default {
               toast.message = '操作失败!';
               toast.type = 'fail';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             }
           )
@@ -141,14 +108,14 @@ export default {
               toast.message = '确认成功!';
               toast.type = 'success';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             },
             function(e) {
               toast.message = '操作失败!';
               toast.type = 'fail';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
               console.log(e);
             }
@@ -159,14 +126,14 @@ export default {
               toast.message = '投诉成功!';
               toast.type = 'success';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             },
             function(e) {
               toast.message = '投诉失败!';
               toast.type = 'fali';
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             }
           );
@@ -192,7 +159,7 @@ export default {
                 type:'success'
               });
               setTimeout(function () {
-                local.reload()
+                location.reload()
               },1000)
             },
             function(e) {
@@ -213,13 +180,15 @@ export default {
           });
         }
       }
-    }
+    },
   }
+
 </script>
 
 <style lang="scss" scoped>
 $order_c:#77807A;
 #Order{
+  padding-bottom: 80px;
   .none_list{
     width: 130px;
     height: 30px;
@@ -234,10 +203,16 @@ $order_c:#77807A;
     border: none;
   }
    table{
-    width: 100%;
+    width: 100vw !important;
+    margin: 0 auto;
     outline: none;
+    display: table;
+    tr:nth-child(even){
+      background-color: #252525;
+    }
     tr{
       border-bottom: 1px solid $order_c;
+      background-color: #282E2A;
       th{
         width: 25%;
         height: 82px;
@@ -259,10 +234,10 @@ $order_c:#77807A;
         width: 25%;
         height: 60px;
         font-size: 22px;
-        color: #fff;
+        color: #ccc;
         line-height: 60px;
         text-align: center;
-        background-color: #282E2A;
+        /*background-color: #282E2A;*/
         .action{
           color: #319B38;
         }

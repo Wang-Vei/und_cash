@@ -27,7 +27,7 @@ Vue.prototype.$qs = Qs;
 
 
 fastClick.attach(document.body); //防止移动端300ms的点击延迟
-// Vue.config.devtools = false; //关闭dev模式
+Vue.config.devtools = false; //关闭dev模式
 Vue.config.productionTip = false;
 
 new Vue({
@@ -35,6 +35,10 @@ new Vue({
     store,
     render: h => h(App)
 }).$mount('#app');
+
+if(!global.consoleSwitch){
+  console.log = ()=>{};
+}
 
 //路由守卫  验证登录状态
 router.beforeEach((to, from, next) => {

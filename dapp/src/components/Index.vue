@@ -18,11 +18,11 @@
           <div class="every_form">
             <li class="have_tip">
               <i class="iconfont icon-wangguan" style="display:inline-block;transform:rotate(60deg);"></i>
-              <label>选择网关</label>
+              <label for="gateway">选择网关</label>
             </li>
             <div class="form_right_part" v-clickoutside="handleClean_getWay">
               <div class="select_getWay">
-                <input readonly :class="`i_input ${gateWay_click?'gateWay_click':''}`" placeholder="选择网关" v-model="v_gateWay" @click="handleChoise_getWay">
+                <input id="gateway" readonly :class="`i_input ${gateWay_click?'gateWay_click':''}`" placeholder="选择网关" v-model="v_gateWay" @click="handleChoise_getWay">
                 <span class="getWay_icon_xia" @click="handleChoise_getWay"><i class="iconfont icon-xia-copy"></i></span>
                 <button class="getWay_details" @click="handleGetway_detail" v-show="v_gateWay">详情</button>
                 <span @click="gateWay= true">添加</span><br>
@@ -70,7 +70,7 @@
           </div>
           <div class="top_entrance">
             <span @click="showGuide = true , guide_content = true" >新手指南</span>
-            <span>交易商入口</span>
+            <a href="http://und.cash/myMobile.html" target="_parent">交易商入口</a>
           </div>
         </div>
         <button @click="handleConfirm">
@@ -79,7 +79,7 @@
       </van-tab>
 <!-- 交易记录页 -->
       <van-tab title="交易记录">
-        <Order></Order>
+        <Order ref="order"></Order>
       </van-tab>
 <!-- 交易记录页结束 -->
     </van-tabs>
@@ -122,12 +122,11 @@ import {getWeb3, getContract} from '@/assets/js/web3_init.js';
 import {abi_undt} from  '@/assets/js/abi/abi_undt.js';
 import {abi_c2c} from  '@/assets/js/abi/abi_c2c.js';
 import {authorize_coin,queryAllMerchantOrders,balance_undt,
-  ethAccounts,authorize_coin_num,jsonGetLocalAll ,
-  gatewayInfoBase,rsaKeys,download,upload,
+  ethAccounts,authorize_coin_num,jsonGetLocalAll ,orders,
+  gatewayInfoBase,rsaKeys,download,upload,queryAllOrder,
   merchants,encrypted,encrypted2,id_address,checker} from '@/assets/js/coin/c2c.js';
-import {onlyNumber} from "@/assets/js/func.js";
+import {onlyNumber,formatTime} from "@/assets/js/func.js";
 import {CONFIG} from "@/assets/js/config.js";
-import Web3 from 'web3';
 
 export default{
   name: 'index',
@@ -158,6 +157,7 @@ export default{
       gateWay: false,         // 添加网关
       Paydetail: false,        // 支付详情
       gateWay_list: [],
+      order_list:[],           //交易记录
     }
   },
 
@@ -215,7 +215,6 @@ export default{
             //授权额度
             let authorize_num = await authorize_coin_num(CONFIG['c2c_addr']);
             authorize_num = Number(authorize_num);
-            console.log(authorize_num);
             if (authorize_num >= 100) {
                 this.balance_lock=true;
             }
@@ -227,8 +226,39 @@ export default{
       };
       init_exchange();
       this.setrsakey();
+      this.orderList()
   },
   methods:{
+    //加载交易记录
+    async orderList() {
+      let Useraddr = await ethAccounts();
+      let gateWay = '';
+      let start = 0;
+      let limit = 999;
+      let orderIDS = await queryAllOrder(Useraddr, 0, gateWay, CONFIG.c2c_addr, start, limit);
+
+      let len = orderIDS.length;
+      var order_list = [];
+      for (let i = 0; i < len; i++) {
+        if (Number(orderIDS[i]) > 0) {
+          console.log(Number(orderIDS[i]))
+          var id = orderIDS[i];
+          var info = await orders(id);
+          info.ID = orderIDS[i]
+          info.beginTime = formatTime(info.beginTime, 'Y-M-D');
+          info.status = CONFIG["status-msg"][info.orderStatus];
+          var gateWayss = info.gateWay;
+          var gateWay_arr = gateWayss.split("-");
+          info.unit = gateWay_arr[2]
+          info.num = web3.utils.fromWei(info.orderCashAmount, 'mwei');
+          order_list.push(info)
+          this.order_list=order_list.sort(function(a, b) {
+            return b[7] - a[7]
+          });
+          this.$store.dispatch('showOrder',this.order_list)
+        }
+      }
+    },
 
     //解锁
     handleUnlock(){
@@ -240,22 +270,22 @@ export default{
         message: '解锁中，请稍侯',
         loadingType:"spinner",
       });
-        authorize_coin(CONFIG.c2c_addr, 10000000000000).then(
-            function(v) {
-              console.log(v);
-                //成功
-                toast.message ="解锁成功"
-                toast.type = 'success'
-                that.balance_lock = true;
-                setTimeout(toast.clear(),1000);
-            },
-            function(e) {
-              console.log('解锁失败')
-              toast.message ="解锁失败"
-              toast.type = 'fail'
-              setTimeout(toast.clear(),2000);
-            }
-        )
+      authorize_coin(CONFIG.c2c_addr, 10000000000000).then(
+        function(v) {
+          console.log(v);
+          //成功
+          toast.message ="解锁成功"
+          toast.type = 'success'
+          that.balance_lock = true;
+          setTimeout(toast.clear(),1000);
+        },
+        function(e) {
+          console.log('解锁失败')
+          toast.message ="解锁失败"
+          toast.type = 'fail'
+          setTimeout(toast.clear(),2000);
+        }
+      )
     },
 
     //点击其他地方 选择网关框 变回本色
@@ -263,7 +293,7 @@ export default{
       this.gateWay_click = false
     },
 
-    //点击选择网关
+    //点击选择网关框（变色）
     handleChoise_getWay () {
       this.showPicker = true;     //选择器弹出
       this.gateWay_click= true    //边框变色
@@ -275,30 +305,6 @@ export default{
         gateWay_All.forEach(function(value) {
           that.gateWay_list.push(value.gateWay);
         });
-      }
-    },
-
-    //全部
-    handleAll(){
-      let temp_num = Number(this.balance);
-      console.log(temp_num);
-      if (temp_num) {
-        let price = this.v_exRate;
-        let arbitrationMarginRatio = this.v_ratio;
-        price = Number(price);
-        console.log(price);
-
-        if (price > 0 && arbitrationMarginRatio > 0) {
-          arbitrationMarginRatio = Number(arbitrationMarginRatio);
-          var costNum = temp_num / (1 + arbitrationMarginRatio) * price;
-          var costNum0 = costNum.toString();
-          var costNum1 = costNum0.indexOf(".");
-          costNum = costNum0.slice(0,costNum1+5)
-          console.log(costNum)
-
-          this.v_costUNDT = this.balance;
-         this.v_money = costNum;
-        }
       }
     },
 
@@ -319,6 +325,8 @@ export default{
         this.desc_MerchantOrders = MerchantOrders.sort(function(a, b) {
             return b[2] - a[2]
         });
+        console.log(MerchantOrders)
+
 
         if (gateWayInfo.status != true) {
             this.$toast.loading({
@@ -337,7 +345,6 @@ export default{
         }
 
         MerchantOrders.forEach(function(n, i) {
-          console.log(n);
             if (n[2] > maxPrice) {
                 maxPrice = Number(n[2]);
                 current_id = i;
@@ -347,11 +354,14 @@ export default{
         if (maxPrice > 0) {
             maxPrice = String(maxPrice);
             maxPrice = this.toolNumber(maxPrice);
+
+          console.log(maxPrice)
             maxPrice = web3.utils.fromWei(maxPrice, 'ether');
             maxPrice = web3.utils.fromWei(maxPrice, 'mwei');
             maxPrice = Number(maxPrice);
             console.log(maxPrice);
             this.v_exRate = maxPrice;
+          console.log(444444444);
         }
 
         gateWayInfo.arbitrationMarginRatio = Number(gateWayInfo.arbitrationMarginRatio);
@@ -363,6 +373,37 @@ export default{
         this.costUNDT(this.v_money);
       }
       this.current_id = current_id;
+    },
+
+    //全部
+    handleAll(){
+      let temp_num = Number(this.balance);
+      console.log(temp_num);
+      if (temp_num) {
+        let price = this.v_exRate;
+        let arbitrationMarginRatio = this.v_ratio;
+        price = Number(price);
+        console.log(price);
+
+        if (price > 0 && arbitrationMarginRatio > 0) {
+          arbitrationMarginRatio = Number(arbitrationMarginRatio);
+          var costNum = temp_num / (1 + arbitrationMarginRatio) * price;
+          var costNum0 = costNum.toString();
+          var costNum1 = costNum0.indexOf(".");
+          costNum = costNum0.slice(0,costNum1+5)
+          console.log(costNum,"  ",arbitrationMarginRatio)
+
+          this.v_costUNDT = this.balance;
+          this.v_money = costNum;
+        }else{
+          this.$toast.loading({
+            forbidClick: true,    // 禁用背景点击
+            mask:true,
+            message: '请选择可用网关',
+            type:'fail',
+          });
+        }
+      }
     },
 
     //网关详情  到子组件中
@@ -692,7 +733,7 @@ $g_c:#666;
   .header_img{
     width: 100%;
     height: 326px;
-    background-image: url('../assets/img/map.gif');
+    background-image: url('../assets/image/map.gif');
     background-size: 120% 326px;
     background-position-x: 50%;
   }
@@ -726,7 +767,7 @@ $g_c:#666;
       border: 1px solid #D4BE9B;
       overflow: hidden;
       margin: 0 auto;
-      background:url('../assets/img/lock.png');
+      background:url('../assets/image/lock.png');
       background-size: 100% 100%;
       display: flex;
       justify-content: space-around;
@@ -826,7 +867,7 @@ $g_c:#666;
     .top_entrance{
       display: flex;
       justify-content: space-around;
-      span{
+      span,a{
         font-size: 28px;
         color:$font_c;
       }

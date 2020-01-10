@@ -1,7 +1,6 @@
-/* eslint-disable */
 export const CONFIG = {
     //Address
-    "undt_addr": "0x960Ee18F2aC33209370580D85B9DC6f1A11006cd", //0x960Ee18F2aC33209370580D85B9DC6f1A11006cd  0x9b33bcb1143367fdc4069c8658543c01c33044e4
+     "undt_addr": "0x7c6c3b4e91923f080d6cc847a68d7330400a95d7",  //0x960Ee18F2aC33209370580D85B9DC6f1A11006cd  0x9b33bcb1143367fdc4069c8658543c01c33044e4
     // "udao_addr": "0x23edca64c6fa8d2f35e5338528ce9cacdc3863e4",
     // "usdt_addr": "0xbC5D4D074BAA3431466c8952C750dc6D579d9691",
     // "dai_addr": "0xfd7cd115a188cd92bf42afb9c574999ff5cc3776",
@@ -16,45 +15,35 @@ export const CONFIG = {
     // "udao_issue_addr": "0x9c223905c7d2d432aabbd9470b49c71494a66b70", //  0x426e90e1dcf04c02407a7401e9b74b162e3c6f58
     // "candy_addr": "0x9bdedd179dfe6bc95a36b68a884fa7f297db2d5d",
     // "query_addr" : "0xc9847d92a1429ed331f6bb94e1dbf7d5c26c690c",
-    "c2c_addr": "0x24E3aBDC967617730674275B9Fd3d51f42cb9503", //0x64abE95327BC35cdf004363F72E7d8D526DFE738
-    //0x61aB6e48f51bE76D020680c4F46d2Ea5307ebdfa
+    "c2c_addr" : "0xC850D77D84050Ff1C92C38747FcEa0F5cc9Aa504",  //0x64abE95327BC35cdf004363F72E7d8D526DFE738
+        //0x61aB6e48f51bE76D020680c4F46d2Ea5307ebdfa
     //0x221c0921Eb5a2f8a1e06044595B2f8d18154B136
     //0x7A6026869682862c38a894CE848C8E25dA681142
-    //0x28986aD01E6A38368234C585cc1bf5fb0716e4c1
     //Format
     "Fixed": 4,
     "Fixed2": 2,
 
     "undt_wei": 'ether',
     //start_block
-    "start_block": 0,
-    "GasLimit": 800000,
-    "GasExtra": 3000000000,
-    "GasExtra2": 300000,
+    "start_block" :  0,
+    "GasLimit" : 800000,
+    "GasExtra" : 3000000000,
+    "GasExtra2" : 300000,
 
-    "status-msg": {
-        "1": "等待接单",
-        "2": "等待付款",
-        "3": "等待确认",
-        "4": "交易完成",
-        "5": "投诉处理中",
-        "6": "交易关闭",
-        "7": "交易取消",
-        "8": "交易完成",
-        "9": "交易完成",
-        "10": "交易取消",
-        "12": "交易取消",
-        "13": "申诉中",
-        "17": "交易完成",
-        "19": "交易完成",
-    },
-
-    "pay-type": {
-        "LB": "银行汇款",
-        "TT": "电汇",
-        "PP": "PAYPAL",
-        "AP": "Alipay",
-        "WP": "WeChat Pay",
-        "BIT": "加密货币",
+    "status-msg" : {
+         "1" : "等待接单",
+         "2" : "等待付款",
+         "3" : "等待确认",
+         "4" : "交易完成",
+         "5" : "投诉处理中",
+         "6" : "交易关闭",
+         "7" : "交易取消",
+         "8" : "交易完成",
+         "9" : "交易完成",
+         "10" : "交易取消",
+         "12" : "交易取消",
+         "13" : "申诉中",
+         "17" : "交易完成",
+         "19" : "交易完成",
     }
 }

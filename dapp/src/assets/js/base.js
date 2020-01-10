@@ -29,10 +29,8 @@ window.addEventListener('load', async() => {
 
 function init() {
     let c2c_addr = CONFIG.c2c_addr;
-    console.log(c2c_addr);
     let undt_addr = CONFIG.undt_addr;
     let Contract_c2c = new web3.eth.Contract(abi_c2c, c2c_addr); //合约
-    console.log(Contract_c2c);
     let Contract_undt = new web3.eth.Contract(abi_undt, undt_addr); //合约
     // let Contract_undt = new web3.eth.Contract(abi_undt, undt_addr); //合约
     // let Contract_c2c = new web3.eth.Contract(abi_c2c, c2c_addr); //合约

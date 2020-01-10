@@ -7,7 +7,7 @@
       </div>
       <div class="overly_content">
         <li v-for="item in info_list">
-          <span>{{item.label}}</span>
+          <span>{{item.label}}</span>&nbsp;&nbsp;
           <span>{{item.val}}</span>
         </li>
       </div>
@@ -115,11 +115,20 @@ export default {
   background-color: rgba($color: #000000, $alpha: .6);
   position: fixed;
   top: 0;
+  display: flex;
+  align-self: center;
   .overly_part{
-    width:480px;
+    min-width:480px;
+    height: auto;
+    max-height: 600px;
     max-width: 750px;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     background-color: #fff;
-    margin:57% auto;
     border-radius: 5px;
     overflow: hidden;
     box-sizing: border-box;
@@ -138,12 +147,12 @@ export default {
     .overly_content{
       padding: 0 20px;
       li{
-        height: 50px;
+        height: 55px;
         line-height: 50px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
-        font-size: 20px;
+        font-size: 22px;
         color: #333;
         border-bottom: 1px solid #e6e6e6;
       }
