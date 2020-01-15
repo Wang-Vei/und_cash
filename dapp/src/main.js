@@ -36,8 +36,10 @@ new Vue({
     render: h => h(App)
 }).$mount('#app');
 
-if(!global.consoleSwitch){
-  console.log = ()=>{};
+
+//生产环境关闭 console
+if (!global.consoleSwitch) {
+    console.log = () => {};
 }
 
 //路由守卫  验证登录状态
