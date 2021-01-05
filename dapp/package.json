@@ -10,7 +10,7 @@
   "dependencies": {
     "@erebos/swarm": "^0.12.0",
     "@erebos/swarm-node": "^0.12.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "core-js": "^2.6.5",
     "erebos": "^0.3.0",
     "fastclick": "^1.0.6",
